@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trading Journal</title>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#000;--card:#0d0d0d;--card2:#141414;--border:#1a1a1a;--border2:#252525;--gold:#c9a84c;--gold-dim:rgba(201,168,76,.15);--text:#e0e0e0;--text-dim:#555;--green:#4caf50;--red:#ef5350;--yellow:#ffc107;--radius:6px;--font:Arial,sans-serif;--scrollbar-thumb:#2a2a2a;--pnl-pos-bg:rgba(76,175,80,.1);--pnl-neg-bg:rgba(239,83,80,.1);--pnl-be-bg:rgba(255,193,7,.06);--row-even:rgba(255,255,255,.012);--row-border:rgba(255,255,255,.025);--shadow:rgba(0,0,0,.5)}
@@ -108,7 +106,9 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .mp-tooltip .mp-pnl{font-weight:700;font-size:14px}
 .mp-tooltip .mp-pct{font-size:12px;color:var(--text-dim)}
 
-.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pr-grid-2x2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pr-col{background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);padding:10px}
 .pr-col-title{font-size:13px;font-weight:600;margin-bottom:8px;text-transform:capitalize;letter-spacing:.3px}
 .pr-col-title.profit{color:var(--green)}
@@ -124,6 +124,11 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .pr-bar-fill{height:100%;border-radius:2px;transition:width .3s}
 .pr-bar-fill.green{background:var(--green)}
 .pr-bar-fill.red{background:var(--red)}
+.pr-status{text-align:center;padding:8px;border-radius:4px;font-size:13px;font-weight:700;letter-spacing:.5px;margin-top:8px;grid-column:1/-1}
+.pr-status.safe{background:rgba(76,175,80,.12);color:var(--green);border:1px solid rgba(76,175,80,.3)}
+.pr-status.warning{background:rgba(255,193,7,.1);color:var(--yellow);border:1px solid rgba(255,193,7,.3)}
+.pr-status.stop{background:rgba(239,83,80,.12);color:var(--red);border:1px solid rgba(239,83,80,.3)}
+.pr-status-col{display:flex;flex-direction:column;gap:6px;justify-content:center}
 .pr-status-item{border-radius:6px;padding:10px 10px;text-align:center;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:1;transition:all .3s}
 .pr-status-item .ps-icon{font-size:18px;line-height:1}
 .pr-status-item .ps-title{font-size:11px;letter-spacing:1px}
@@ -132,10 +137,10 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .pr-status-item.warning{background:linear-gradient(135deg,rgba(255,193,7,.15),rgba(255,193,7,.04));border:1.5px solid rgba(255,193,7,.45);color:var(--yellow);animation:pulseWarn 2s ease-in-out infinite}
 .pr-status-item.danger{background:linear-gradient(135deg,rgba(239,83,80,.18),rgba(239,83,80,.05));border:1.5px solid rgba(239,83,80,.5);color:var(--red);animation:pulseDanger 1.2s ease-in-out infinite}
 .pr-status-item.none{background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1.5px solid rgba(255,255,255,.08);color:var(--text-dim)}
-@keyframes pulseWarn{0%,100%{box-shadow:0 0 6px rgba(255,193,7,.15)} 50%{box-shadow:0 0 14px rgba(255,193,7,.35)}}
-@keyframes pulseDanger{0%,100%{box-shadow:0 0 8px rgba(239,83,80,.2)} 50%{box-shadow:0 0 20px rgba(239,83,80,.45)}}
-@keyframes shake{0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)}}
-.shake{animation:shake .4s ease-in-out}
+@keyframes pulseWarn{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+@keyframes pulseDanger{0%,100%{transform:scale(1);box-shadow:0 0 0 rgba(239,83,80,0)}50%{transform:scale(1.03);box-shadow:0 0 20px rgba(239,83,80,.2)}}
+.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes shake{10%,90%{transform:translate3d(-1px,0,0)}20%,80%{transform:translate3d(2px,0,0)}30%,50%,70%{transform:translate3d(-4px,0,0)}40%,60%{transform:translate3d(4px,0,0)}}
 
 .cl-wrap{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;margin-bottom:10px}
 .cl-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:14px;cursor:pointer;user-select:none}
@@ -343,11 +348,6 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 .pf-edit-row input:focus{outline:none;border-color:var(--gold)}
 .pf-edit-row button{background:var(--gold);color:#000;border:none;border-radius:4px;padding:4px 10px;font-weight:700;cursor:pointer;font-size:12px}
 .pf-edit-row .pf-edit-cancel{background:var(--border2);color:var(--text)}
-.grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.grid-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.pr-grid-2x2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.pr-status-col{display:flex;flex-direction:column;gap:6px;justify-content:center}
-.rp-tables-row{gap:10px}
 
 @media(max-width:768px){
   body{padding:8px}
@@ -357,6 +357,8 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
   .section{padding:10px}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .weekly-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2col{grid-template-columns:1fr}
+  .grid-3col{grid-template-columns:1fr}
   .form-group{flex:1 1 100%}
   .form-row{gap:4px}
   .form-group input,.form-group select{font-size:16px}
@@ -377,23 +379,20 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
   .setup-modal-box{width:85vw!important;max-width:280px}
   .quote-modal-box{width:90vw!important;max-width:340px}
   .rp-snapshot{grid-template-columns:repeat(2,1fr)}
-  .pr-grid{grid-template-columns:1fr}
+  .pr-grid-2x2{grid-template-columns:1fr}
+  .rp-tables-row{grid-template-columns:1fr}
+  .rp-table-wrap{overflow-x:auto}
   .pf-summary-grid{grid-template-columns:repeat(2,1fr)}
   .pf-form-row .form-group{flex:1 1 100%}
   .pf-add-grid{grid-template-columns:1fr 1fr}
   .pf-detail-grid{grid-template-columns:1fr}
   .tab-btn{padding:8px 16px;font-size:14px}
-  .grid-2col{grid-template-columns:1fr}
-  .grid-3col{grid-template-columns:1fr}
-  .pr-grid-2x2{grid-template-columns:1fr;gap:6px}
+  table.trade-tbl,table.pf-tbl{font-size:12px}
+  table.trade-tbl th,table.trade-tbl td{padding:3px 2px}
   .pr-status-col{gap:4px}
   .pr-status-item{padding:8px 8px}
   .pr-status-item .ps-title{font-size:10px}
   .pr-status-item .ps-msg{font-size:12px}
-  .rp-tables-row{grid-template-columns:1fr}
-  .rp-table-wrap{overflow-x:auto}
-  table.trade-tbl,table.pf-tbl{font-size:12px}
-  table.trade-tbl th,table.trade-tbl td{padding:3px 2px}
 }
 </style>
 </head>
@@ -465,17 +464,6 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
   </div>
   <div class="pr-grid-2x2" id="pr2x2"></div>
 </div>
-    <div class="form-group">
-      <label>Max Loss (%/month)</label>
-      <input type="number" id="maxLossPct" placeholder="e.g. 5" min="0" step="any">
-    </div>
-  </div>
-  <div class="form-group" style="margin-bottom:10px">
-    <label>Daily Loss Limit ($/day)</label>
-    <input type="number" id="dailyLossLimit" placeholder="e.g. 200" min="0" step="any">
-  </div>
-  <div class="pr-grid" id="prGrid"></div>
-</div>
 
 <div id="weekly" class="section">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -522,7 +510,10 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 <div id="routine-section" class="section">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <div class="section-title" style="margin-bottom:0">Daily Routine</div>
-    <button class="action-btn" style="padding:2px 8px;font-size:12px" onclick="openRoutineModal()" title="Manage routine">&#9881;</button>
+    <div style="display:flex;gap:6px">
+      <button class="action-btn" style="padding:2px 8px;font-size:12px" onclick="resetRoutine()" title="Reset all checks">&#8635;</button>
+      <button class="action-btn" style="padding:2px 8px;font-size:12px" onclick="openRoutineModal()" title="Manage routine">&#9881;</button>
+    </div>
   </div>
   <div class="routine-wrap" id="routineWrap"></div>
 </div>
@@ -537,7 +528,10 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
   </div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
     <span style="font-size:13px;color:var(--text-dim)">Pre-Trade Checklist</span>
-    <button class="action-btn" style="padding:2px 8px;font-size:12px" onclick="openChecklistModal()" title="Manage checklists">&#9881;</button>
+    <div style="display:flex;gap:4px">
+      <button class="action-btn" style="padding:2px 8px;font-size:12px" onclick="resetChecklist()" title="Reset checklist">&#8635;</button>
+      <button class="action-btn" style="padding:2px 8px;font-size:12px" onclick="openChecklistModal()" title="Manage checklists">&#9881;</button>
+    </div>
   </div>
   <div class="cl-wrap" id="checklistWrap"></div>
   <div class="form-row">
@@ -656,7 +650,7 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
     <button class="rp-pill" onclick="setReportFilter('all')">All</button>
   </div>
   <div class="rp-snapshot" id="rpSnapshot"></div>
-  <div class="grid-2col rp-tables-row" style="margin-top:10px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
     <div class="rp-table-wrap"><div class="rp-sub-title">Performance by Setup</div><div id="rpSetup"></div></div>
     <div class="rp-table-wrap"><div class="rp-sub-title">Session Analysis</div><div id="rpSession"></div></div>
   </div>
@@ -723,58 +717,6 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 <input type="file" id="csvFileInput" accept=".csv" style="display:none">
 
 <script>
-var firebaseConfig = {
-  apiKey: "AIzaSyD9I08mlVS3lVbVcZ6xZmNhLDzjSgdVFew",
-  authDomain: "trading-journal-fe385.firebaseapp.com",
-  databaseURL: "https://trading-journal-fe385-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "trading-journal-fe385",
-  storageBucket: "trading-journal-fe385.firebasestorage.app",
-  messagingSenderId: "1025955282192",
-  appId: "1:1025955282192:web:510521fbc7b6ef22a03995"
-};
-var fbApp = firebase.initializeApp(firebaseConfig);
-var fbDb = firebase.database();
-var fbSyncing = false;
-
-function fbSave() {
-  if (fbSyncing) return;
-  fbSyncing = true;
-  try { fbDb.ref('journal').set(data); } catch(e) {}
-  setTimeout(function() { fbSyncing = false; }, 2000);
-}
-
-function fbLoad(callback) {
-  fbDb.ref('journal').once('value', function(snap) {
-    var remote = snap.val();
-    if (remote && (remote.trades || remote.setups || remote.dailyRoutine)) {
-      callback(remote);
-    } else {
-      callback(null);
-    }
-  }, function(err) {
-    console.error('Firebase load error:', err);
-    callback(null);
-  });
-}
-
-function fbListen() {
-  fbDb.ref('journal').on('value', function(snap) {
-    if (fbSyncing) return;
-    var remote = snap.val();
-    if (remote && (remote.trades || remote.setups || remote.dailyRoutine)) {
-      data = remote;
-      if (!data.trades) data.trades = [];
-      if (!data.portfolio) data.portfolio = [];
-      if (!data.setups) data.setups = [];
-      if (!data.quotes) data.quotes = [];
-      if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
-      if (!data.dailyRoutine) data.dailyRoutine = [];
-      try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
-      try { refreshAll(); } catch(e) {}
-    }
-  });
-}
-
 var data = {
   initialCapital: 0,
   riskPercent: 0,
@@ -827,6 +769,7 @@ function load() {
   if (!data.riskPercent) data.riskPercent = 0;
   if (data.profitGoalPct === undefined) data.profitGoalPct = 0;
   if (data.maxLossPct === undefined) data.maxLossPct = 0;
+  if (data.dailyLossLimit === undefined) data.dailyLossLimit = 0;
   if (!data.setupChecklists) {
     if (data.checklist) {
       data.setupChecklists = { 'default': data.checklist.map(function(c) { return { text: c.text }; }) };
@@ -868,7 +811,6 @@ function save() {
   if (data.trades === undefined && data.setups === undefined && data.dailyRoutine === undefined) return;
   localStorage.setItem('tradingJournal', JSON.stringify(data));
   localStorage.setItem('tradingJournalBackup', JSON.stringify(data));
-  fbSave();
 }
 
 function get1R() {
@@ -1085,6 +1027,15 @@ function updateDashboard() {
   document.getElementById('statsGrid').innerHTML = h;
 }
 
+function updateProfitRiskFields() {
+  var gp = document.getElementById('profitGoalPct');
+  var ml = document.getElementById('maxLossPct');
+  var dl = document.getElementById('dailyLossLimit');
+  if (document.activeElement !== gp) gp.value = data.profitGoalPct > 0 ? data.profitGoalPct : '';
+  if (document.activeElement !== ml) ml.value = data.maxLossPct > 0 ? data.maxLossPct : '';
+  if (document.activeElement !== dl) dl.value = data.dailyLossLimit > 0 ? data.dailyLossLimit : '';
+}
+
 function updateProfitRisk() {
   var ic = data.initialCapital || 0;
   var goalPct = data.profitGoalPct || 0;
@@ -1115,10 +1066,13 @@ function updateProfitRisk() {
   var dailyLimitAmt = prevDayBalance * (dailyLossPct / 100);
   var dailyLoss = todayPnl < 0 ? Math.abs(todayPnl) : 0;
   var dailyRemaining = dailyLimitAmt > 0 ? Math.max(0, dailyLimitAmt - dailyLoss) : 0;
+  var dailyLossRatio = prevDayBalance > 0 ? (dailyLoss / prevDayBalance) * 100 : 0;
+  var monthlyLossRatio = ic > 0 ? (currentDrawdown / ic) * 100 : 0;
 
   var el = document.getElementById('pr2x2');
   var h = '';
 
+  // Box 1: Profit (top-left)
   h += '<div class="pr-col"><div class="pr-col-title profit">Profit (Monthly)</div>';
   h += '<div class="pr-row"><span class="pr-label">Target Profit</span><span class="pr-val green">' + fmtMoney(targetProfit) + '</span></div>';
   h += '<div class="pr-row"><span class="pr-label">MTD P&amp;L</span><span class="pr-val ' + (currentPnl >= 0 ? 'green' : 'red') + '">' + (currentPnl >= 0 ? '+' : '') + fmtMoney(currentPnl) + '</span></div>';
@@ -1126,12 +1080,14 @@ function updateProfitRisk() {
   h += '<div class="pr-row"><span class="pr-label">Progress</span><span class="pr-val ' + (profitProgress >= 100 ? 'green' : '') + '">' + fmtPct(Math.min(profitProgress, 999)) + '</span></div>';
   h += '</div>';
 
+  // Box 2: Risk (top-right)
   h += '<div class="pr-col"><div class="pr-col-title risk">Risk (Monthly)</div>';
   h += '<div class="pr-row"><span class="pr-label">Max Drawdown</span><span class="pr-val red">' + fmtMoney(maxLossAmt) + '</span></div>';
   h += '<div class="pr-row"><span class="pr-label">Current Balance</span><span class="pr-val ' + (currentBalance >= minBalance ? 'green' : 'red') + '">' + fmtMoney(currentBalance) + '</span></div>';
   h += '<div class="pr-row"><span class="pr-label">Buffer Left</span><span class="pr-val ' + (remainingDrawdown <= maxLossAmt * 0.1 ? 'red' : (remainingDrawdown <= maxLossAmt * 0.5 ? 'orange' : 'green')) + '">' + fmtMoney(remainingDrawdown) + '</span></div>';
   h += '</div>';
 
+  // Box 3: Daily (bottom-left)
   h += '<div class="pr-col"><div class="pr-col-title" style="color:var(--yellow)">Daily Risk</div>';
   h += '<div class="pr-row"><span class="pr-label">Prev Close</span><span class="pr-val">' + fmtMoney(prevDayBalance) + '</span></div>';
   h += '<div class="pr-row"><span class="pr-label">Limit</span><span class="pr-val green">' + (dailyLossPct > 0 ? fmtMoney(dailyLimitAmt) + ' (' + dailyLossPct + '%)' : 'N/A') + '</span></div>';
@@ -1139,8 +1095,10 @@ function updateProfitRisk() {
   h += '<div class="pr-row"><span class="pr-label">Buffer Left</span><span class="pr-val ' + (dailyLossPct > 0 && dailyRemaining <= dailyLimitAmt * 0.2 ? 'red' : 'green') + '">' + (dailyLossPct > 0 ? fmtMoney(dailyRemaining) : '-') + '</span></div>';
   h += '</div>';
 
+  // Box 4: Status Warnings (bottom-right)
   h += '<div class="pr-status-col" id="jsStatusCol">';
 
+  // Daily status
   var dCls = 'none', dIcon = '&#x2139;', dTitle = 'DAILY LIMIT', dMsg = 'Not set';
   if (dailyLossPct > 0) {
     var dlPctUsed = dailyLimitAmt > 0 ? (dailyLoss / dailyLimitAmt) * 100 : 0;
@@ -1156,6 +1114,7 @@ function updateProfitRisk() {
   }
   h += '<div class="pr-status-item ' + dCls + '"><span class="ps-icon">' + dIcon + '</span><span class="ps-title">' + dTitle + '</span><span class="ps-msg">' + dMsg + '</span></div>';
 
+  // Monthly status
   var mCls = 'none', mIcon = '&#x2139;', mTitle = 'MAX LOSS', mMsg = 'Not set';
   if (maxLossAmt > 0) {
     var mlPctUsed = (currentDrawdown / maxLossAmt) * 100;
@@ -1175,15 +1134,8 @@ function updateProfitRisk() {
 
   el.innerHTML = h;
 
-  setTimeout(function() {
-    var items = document.querySelectorAll('.pr-status-item.shake');
-    items.forEach(function(el) { el.classList.remove('shake'); });
-  }, 500);
-
   var saveBtn = document.getElementById('saveTradeBtn');
-  var dlStop = dailyLossPct > 0 && dailyLoss >= dailyLimitAmt;
-  var mlStop = maxLossAmt > 0 && currentDrawdown >= maxLossAmt;
-  var isStop = (dlStop || mlStop) && editingId === null;
+  var isStop = maxLossAmt > 0 && currentDrawdown >= maxLossAmt && editingId === null;
   if (saveBtn) {
     saveBtn.disabled = isStop;
     saveBtn.style.opacity = isStop ? '0.4' : '1';
@@ -1652,16 +1604,9 @@ function drawMonthlyPnl() {
     ctx.fillText(fmtMoney(v), pL - 6, yF(v) + 4);
   }
 
-  ctx.fillStyle = isLight() ? '#999' : '#777';
-  ctx.font = '11px Arial';
-  ctx.textAlign = 'center';
-  months.forEach(function(m, i) {
-    ctx.fillText(m.label, xF(i), h - 4);
-  });
-
-  if (allMonths.length > maxView) {
-    var viewPct = (mpViewEnd - viewStart) / allMonths.length;
-    var scrollPct = viewStart / (allMonths.length - (mpViewEnd - viewStart));
+  if (allKeys.length > maxView) {
+    var viewPct = (mpViewEnd - viewStart) / allKeys.length;
+    var scrollPct = viewStart / (allKeys.length - (mpViewEnd - viewStart));
     scrollPct = Math.min(scrollPct, 1);
     var barX = w - pR - 6;
     var barY = pT;
@@ -1774,7 +1719,7 @@ function renderTable() {
       '<td class="' + pc + '">' + (pnl >= 0 ? '+' : '') + Math.round(pnl) + '</td>' +
       '<td>' + (t.emotion || '-') + '</td>' +
       '<td>' + (t.mistake || '-') + '</td>' +
-      '<td><button class="edit-btn" onclick="editTrade(\'' + t.id + '\')">Edit</button><button class="del-btn" onclick="deleteTrade(\'' + t.id + '\')">Del</button></td>' +
+      '<td><button class="edit-btn" onclick="editTrade(' + String(t.id) + ')">Edit</button><button class="del-btn" onclick="deleteTrade(' + String(t.id) + ')">Del</button></td>' +
       '</tr>';
   });
   tbody.innerHTML = html;
@@ -1917,8 +1862,26 @@ function saveTrade() {
     }
   }
 
+  var ic2 = data.initialCapital || 0;
+  var dailyLossPct2 = data.dailyLossLimit || 0;
+  var todayStr2 = new Date().toISOString().split('T')[0];
+  var todayPnl2 = 0;
+  data.trades.forEach(function(tr) { if (tr.date === todayStr2) todayPnl2 += calcPnl(tr); });
+  var prevDayBalance2 = ic2;
+  var sorted2 = data.trades.slice().sort(function(a,b){ return a.date.localeCompare(b.date); });
+  var running2 = ic2;
+  for (var si2 = 0; si2 < sorted2.length; si2++) {
+    if (sorted2[si2].date < todayStr2) running2 += calcPnl(sorted2[si2]);
+  }
+  prevDayBalance2 = running2;
+  var dlAmt2 = prevDayBalance2 * (dailyLossPct2 / 100);
+  var dlUsed2 = todayPnl2 < 0 ? Math.abs(todayPnl2) : 0;
+  if (!editingId && dailyLossPct2 > 0 && dlUsed2 >= dlAmt2 && dlAmt2 > 0) {
+    showToast('DAILY STOP — Loss limit reached. No more trades today.', 'error'); return;
+  }
+
   if (editingId !== null) {
-    var idx = data.trades.findIndex(function(t) { return t.id === editingId; });
+    var idx = data.trades.findIndex(function(t) { return String(t.id) === String(editingId); });
     if (idx >= 0) {
       data.trades[idx].date = date;
       data.trades[idx].time = time;
@@ -2021,21 +1984,6 @@ function toggleChecklist(i) {
 
 function toggleChecklistMode() {
   data.checklistMode = data.checklistMode === 'strict' ? 'soft' : 'strict';
-  save();
-  var modeBtn = document.getElementById('clModeBtn');
-  modeBtn.textContent = data.checklistMode === 'strict' ? 'ON' : 'OFF';
-  modeBtn.className = 'cl-mode-btn ' + (data.checklistMode === 'strict' ? 'strict' : 'soft');
-}
-
-function resetChecklist() {
-  currentChecklistState = currentChecklistState.map(function() { return false; });
-  var items = document.querySelectorAll('.cl-item');
-  items.forEach(function(item) { item.classList.remove('checked', 'missing'); });
-  var cbs = document.querySelectorAll('#checklistWrap input[type=checkbox]');
-  cbs.forEach(function(cb) { cb.checked = false; });
-}
-
-// REPLACED_TC
   save();
   var modeBtn = document.getElementById('clModeBtn');
   modeBtn.textContent = data.checklistMode === 'strict' ? 'ON' : 'OFF';
@@ -2185,6 +2133,24 @@ function toggleRoutine(i) {
   if (item) item.classList.toggle('checked', routineChecked[i]);
 }
 
+function resetChecklist() {
+  currentChecklistState = currentChecklistState.map(function() { return false; });
+  var items = document.querySelectorAll('.cl-item');
+  items.forEach(function(item) { item.classList.remove('checked', 'missing'); });
+  var cbs = document.querySelectorAll('#checklistWrap input[type=checkbox]');
+  cbs.forEach(function(cb) { cb.checked = false; });
+}
+
+function resetRoutine() {
+  routineChecked = (data.dailyRoutine || []).map(function() { return false; });
+  (data.dailyRoutine || []).forEach(function(_, i) {
+    var cb = document.getElementById('rt_' + i);
+    if (cb) cb.checked = false;
+    var item = cb ? cb.closest('.routine-item') : null;
+    if (item) item.classList.remove('checked');
+  });
+}
+
 function openRoutineModal() {
   var ov = document.createElement('div');
   ov.className = 'cl-modal';
@@ -2314,6 +2280,14 @@ function editTrade(id) {
   document.getElementById('tradeMistake').value = t.mistake || '';
   setBias(t.bias);
   setResult(t.result);
+
+  var items = getActiveChecklist();
+  var saved = Array.isArray(t.checklist) ? t.checklist : [];
+  if (!items.length) { currentChecklistState = []; }
+  else if (saved.length === items.length) { currentChecklistState = saved.slice(); }
+  else { currentChecklistState = items.map(function() { return true; }); }
+  renderChecklist();
+
   document.getElementById('saveTradeBtn').textContent = 'Update Trade';
   document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
 }
@@ -2419,6 +2393,12 @@ document.getElementById('maxLossPct').addEventListener('input', function() {
   data.maxLossPct = v > 0 ? v : 0; save(); updateProfitRisk();
 });
 document.getElementById('maxLossPct').addEventListener('blur', function() { refreshAll(); });
+
+document.getElementById('dailyLossLimit').addEventListener('input', function() {
+  var v = parseFloat(this.value);
+  data.dailyLossLimit = v > 0 ? v : 0; save(); updateProfitRisk();
+});
+document.getElementById('dailyLossLimit').addEventListener('blur', function() { refreshAll(); });
 
 document.getElementById('filterMonth').addEventListener('change', function() {
   updateDashboard(); updateProfitRisk(); updateSetupBreakdown(); updateCalendar(); drawEquityCurve(); renderTable();
@@ -3058,31 +3038,6 @@ try { setupEcDrag(); } catch(e) {}
 try { setupMpDrag(); } catch(e) {}
 try { renderChecklist(); } catch(e) {}
 refreshAll();
-
-fbLoad(function(remoteData) {
-  if (remoteData) {
-    data = remoteData;
-    if (!data.trades) data.trades = [];
-    if (!data.initialCapital) data.initialCapital = 0;
-    if (!data.riskPercent) data.riskPercent = 0;
-    if (data.profitGoalPct === undefined) data.profitGoalPct = 0;
-    if (data.maxLossPct === undefined) data.maxLossPct = 0;
-    if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
-    if (data.checklistMode === undefined) data.checklistMode = 'strict';
-    if (!data.dailyRoutine) data.dailyRoutine = [];
-    if (!data.setups) data.setups = [];
-    if (!data.quotes) data.quotes = [];
-    if (data.currentQuoteIdx === undefined) data.currentQuoteIdx = 0;
-    if (!data.portfolio) data.portfolio = [];
-    try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
-    fbSyncing = true;
-    refreshAll();
-    fbSyncing = false;
-  } else {
-    fbSave();
-  }
-  fbListen();
-});
 </script>
 </body>
 </html>
