@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trading Journal</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#000;--card:#0d0d0d;--card2:#141414;--border:#1a1a1a;--border2:#252525;--gold:#c9a84c;--gold-dim:rgba(201,168,76,.15);--text:#e0e0e0;--text-dim:#555;--green:#4caf50;--red:#ef5350;--yellow:#ffc107;--radius:6px;--font:Arial,sans-serif;--scrollbar-thumb:#2a2a2a;--pnl-pos-bg:rgba(76,175,80,.1);--pnl-neg-bg:rgba(239,83,80,.1);--pnl-be-bg:rgba(255,193,7,.06);--row-even:rgba(255,255,255,.012);--row-border:rgba(255,255,255,.025);--shadow:rgba(0,0,0,.5)}
@@ -717,6 +719,58 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 <input type="file" id="csvFileInput" accept=".csv" style="display:none">
 
 <script>
+var firebaseConfig = {
+  apiKey: "AIzaSyD9I08mlVS3lVbVcZ6xZmNhLDzjSgdVFew",
+  authDomain: "trading-journal-fe385.firebaseapp.com",
+  databaseURL: "https://trading-journal-fe385-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "trading-journal-fe385",
+  storageBucket: "trading-journal-fe385.firebasestorage.app",
+  messagingSenderId: "1025955282192",
+  appId: "1:1025955282192:web:510521fbc7b6ef22a03995"
+};
+firebase.initializeApp(firebaseConfig);
+var fbDb = firebase.database();
+var fbSyncing = false;
+
+function fbSave() {
+  if (fbSyncing) return;
+  fbSyncing = true;
+  try { fbDb.ref('journal').set(data); } catch(e) {}
+  setTimeout(function() { fbSyncing = false; }, 2000);
+}
+
+function fbLoad(callback) {
+  fbDb.ref('journal').once('value', function(snap) {
+    var remote = snap.val();
+    if (remote && (remote.trades || remote.setups || remote.dailyRoutine)) {
+      callback(remote);
+    } else {
+      callback(null);
+    }
+  }, function(err) {
+    console.error('Firebase load error:', err);
+    callback(null);
+  });
+}
+
+function fbListen() {
+  fbDb.ref('journal').on('value', function(snap) {
+    if (fbSyncing) return;
+    var remote = snap.val();
+    if (remote && (remote.trades || remote.setups || remote.dailyRoutine)) {
+      data = remote;
+      if (!data.trades) data.trades = [];
+      if (!data.portfolio) data.portfolio = [];
+      if (!data.setups) data.setups = [];
+      if (!data.quotes) data.quotes = [];
+      if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
+      if (!data.dailyRoutine) data.dailyRoutine = [];
+      try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
+      try { refreshAll(); } catch(e) {}
+    }
+  });
+}
+
 var data = {
   initialCapital: 0,
   riskPercent: 0,
@@ -811,6 +865,7 @@ function save() {
   if (data.trades === undefined && data.setups === undefined && data.dailyRoutine === undefined) return;
   localStorage.setItem('tradingJournal', JSON.stringify(data));
   localStorage.setItem('tradingJournalBackup', JSON.stringify(data));
+  fbSave();
 }
 
 function get1R() {
@@ -3038,6 +3093,32 @@ try { setupEcDrag(); } catch(e) {}
 try { setupMpDrag(); } catch(e) {}
 try { renderChecklist(); } catch(e) {}
 refreshAll();
+
+fbLoad(function(remoteData) {
+  if (remoteData) {
+    data = remoteData;
+    if (!data.trades) data.trades = [];
+    if (!data.initialCapital) data.initialCapital = 0;
+    if (!data.riskPercent) data.riskPercent = 0;
+    if (data.profitGoalPct === undefined) data.profitGoalPct = 0;
+    if (data.maxLossPct === undefined) data.maxLossPct = 0;
+    if (data.dailyLossLimit === undefined) data.dailyLossLimit = 0;
+    if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
+    if (data.checklistMode === undefined) data.checklistMode = 'strict';
+    if (!data.dailyRoutine) data.dailyRoutine = [];
+    if (!data.setups) data.setups = [];
+    if (!data.quotes) data.quotes = [];
+    if (data.currentQuoteIdx === undefined) data.currentQuoteIdx = 0;
+    if (!data.portfolio) data.portfolio = [];
+    try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
+    fbSyncing = true;
+    refreshAll();
+    fbSyncing = false;
+  } else {
+    fbSave();
+  }
+  fbListen();
+});
 </script>
 </body>
 </html>
