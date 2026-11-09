@@ -11,6 +11,7 @@
 :root{--bg:#000;--card:#0d0d0d;--card2:#141414;--border:#1a1a1a;--border2:#252525;--gold:#c9a84c;--gold-dim:rgba(201,168,76,.15);--text:#e0e0e0;--text-dim:#555;--green:#4caf50;--red:#ef5350;--yellow:#ffc107;--radius:6px;--font:Arial,sans-serif;--scrollbar-thumb:#2a2a2a;--pnl-pos-bg:rgba(76,175,80,.1);--pnl-neg-bg:rgba(239,83,80,.1);--pnl-be-bg:rgba(255,193,7,.06);--row-even:rgba(255,255,255,.012);--row-border:rgba(255,255,255,.025);--shadow:rgba(0,0,0,.5)}
 [data-theme="light"]{--bg:#f5f5f5;--card:#fff;--card2:#fafafa;--border:#e0e0e0;--border2:#d0d0d0;--gold:#b8922e;--gold-dim:rgba(184,146,46,.12);--text:#1a1a1a;--text-dim:#888;--green:#2e7d32;--red:#c62828;--yellow:#f9a825;--scrollbar-thumb:#ccc;--pnl-pos-bg:rgba(46,125,50,.08);--pnl-neg-bg:rgba(198,40,40,.08);--pnl-be-bg:rgba(249,168,37,.06);--row-even:rgba(0,0,0,.02);--row-border:rgba(0,0,0,.06);--shadow:rgba(0,0,0,.1)}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.5;padding:16px;max-width:1100px;margin:0 auto}
+@media(min-width:1900px){body{max-width:1240px}}
 *{font-size:inherit}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
@@ -18,10 +19,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16
 
 .header{text-align:center;padding:20px 0 8px;position:relative}
 .header h1{font-size:27px;font-weight:700;color:var(--gold);letter-spacing:2px}
-.quote-wrap{margin-top:6px;position:relative;display:inline-block}
-.quote-line{font-size:14px;color:var(--text);font-style:italic;cursor:pointer;transition:color .2s;border-bottom:1px dashed transparent;line-height:1.6;margin-bottom:2px}
+.quote-wrap{margin-top:6px;position:relative;display:block;width:100%}
+.quote-line{display:block;width:100%;font-size:14px;color:var(--text);font-style:italic;cursor:pointer;transition:color .2s;border-bottom:1px dashed transparent;line-height:1.6;margin-bottom:2px;white-space:pre-wrap;overflow-wrap:anywhere}
 .quote-line:hover{color:var(--gold);border-bottom-color:var(--gold-dim)}
-.quote-input{background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;font-size:14px;font-family:var(--font);font-style:italic;width:360px;text-align:center;display:none}
+.quote-input{background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:6px 8px;font-size:14px;font-family:var(--font);font-style:italic;width:min(700px,100%);min-height:80px;text-align:center;display:none;resize:vertical;white-space:pre-wrap}
 .quote-actions{display:none;gap:4px;justify-content:center;margin-top:4px}
 .quote-actions button{background:var(--card2);color:var(--text-dim);border:1px solid var(--border2);border-radius:3px;padding:2px 10px;font-size:13px;cursor:pointer;font-family:var(--font)}
 .quote-actions button:hover{color:var(--gold);border-color:var(--gold)}
@@ -183,6 +184,40 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .routine-item.checked label{color:var(--text)}
 .routine-item .rt-num{color:var(--gold);font-weight:600;margin-right:2px}
 
+.daily-plan-grid,.daily-plan-scenarios{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.daily-plan-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;min-width:0}
+.daily-plan-card-title{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.daily-plan-asset{max-width:260px;margin-bottom:8px}
+.daily-plan-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.daily-plan-table th{font-size:13px;color:var(--text-dim);text-align:left;padding:5px 6px;border:1px solid var(--border2);background:var(--card)}
+.daily-plan-table td{border:1px solid var(--border);padding:2px}
+.daily-plan-table input{width:100%;min-width:0;background:var(--card);color:var(--text);border:1px solid transparent;border-radius:3px;padding:6px;font-family:var(--font);font-size:13px}
+.daily-plan-table input:focus{outline:none;border-color:var(--gold)}
+.daily-plan-conclusion{margin-top:8px}
+.daily-plan-conclusion textarea,.daily-plan-scenario{width:100%;min-height:90px;resize:vertical;background:var(--card);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:7px 8px;font-family:var(--font);font-size:14px;line-height:1.45}
+.daily-plan-conclusion textarea:focus,.daily-plan-scenario:focus{outline:none;border-color:var(--gold)}
+.daily-plan-conclusion textarea::placeholder,.daily-plan-scenario::placeholder{color:var(--text-dim)}
+
+.daily-plan-scenario-section{margin-top:2px}
+.daily-plan-levels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;max-width:700px}
+.daily-plan-levels input,.daily-plan-meta-group select{width:100%;background:var(--card);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:7px 8px;font-family:var(--font);font-size:14px}
+.daily-plan-levels input:focus,.daily-plan-meta-group select:focus{outline:none;border-color:var(--gold)}
+.daily-plan-levels input::placeholder{color:var(--text-dim)}
+.daily-plan-input:disabled{opacity:.78;cursor:not-allowed}
+#dailyPlanSaveBtn:disabled,#dailyPlanEditBtn:disabled{opacity:.45;cursor:not-allowed}
+.daily-plan-scenario-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.daily-plan-meta-group{display:flex;align-items:center;gap:8px;min-width:0}
+.daily-plan-meta-group label{font-size:13px;color:var(--text-dim);white-space:nowrap}
+.daily-plan-meta-group select{flex:1;min-width:0}
+.daily-plan-select.rating-five{background:#c62828!important;color:#fff!important;border-color:#c62828!important}
+.daily-plan-select.rating-six{background:#ff9800!important;color:#161616!important;border-color:#ff9800!important}
+.daily-plan-select.rating-high{background:#2e7d32!important;color:#fff!important;border-color:#2e7d32!important}
+.daily-plan-select.mindset-cautious{background:#ff9800!important;color:#161616!important;border-color:#ff9800!important}
+.daily-plan-select.mindset-expect{background:#2e7d32!important;color:#fff!important;border-color:#2e7d32!important}
+
+
+
+
 .rp-pills{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
 .rp-pill{background:var(--card2);color:var(--text-dim);border:1px solid var(--border2);border-radius:20px;padding:3px 14px;font-size:13px;cursor:pointer;font-family:var(--font);transition:all .15s}
 .rp-pill:hover{border-color:var(--gold);color:var(--gold)}
@@ -210,9 +245,10 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .form-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .form-group{flex:1 1 100px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .form-group label{font-size:13px;color:var(--text-dim);text-transform:none;letter-spacing:.3px}
-.form-group input,.form-group select{background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:6px 8px;font-family:var(--font);font-size:14px}
-.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--gold)}
-.form-group input::placeholder{color:var(--text-dim)}
+.form-group input,.form-group select,.form-group textarea{background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:6px 8px;font-family:var(--font);font-size:14px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold)}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--text-dim)}
+.form-group textarea{min-height:72px;resize:vertical}
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type="number"]{appearance:textfield;-moz-appearance:textfield}
@@ -285,14 +321,15 @@ td .del-btn:hover{border-color:var(--red);color:var(--red)}
 .quote-modal-box{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;width:340px}
 .quote-modal-box h3{color:var(--gold);font-size:14px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px}
 .quote-list{max-height:180px;overflow-y:auto;margin-bottom:8px}
-.quote-list-item{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border)}
-.quote-list-item input{flex:1;background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;font-size:14px;font-family:var(--font);font-style:italic}
-.quote-list-item input:focus{outline:none;border-color:var(--gold)}
+.quote-list-item{display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid var(--border)}
+.quote-list-item textarea{flex:1;min-width:0;min-height:64px;resize:vertical;background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;font-size:14px;font-family:var(--font);font-style:italic;white-space:pre-wrap}
+.quote-list-item textarea:focus,.quote-list-item select:focus{outline:none;border-color:var(--gold)}
+.quote-list-item select{background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:4px;font-family:var(--font);font-size:13px}
 .quote-list-item button{background:none;border:1px solid var(--border2);border-radius:3px;padding:2px 7px;font-size:13px;color:var(--text-dim);cursor:pointer;transition:all .15s}
 .quote-list-item button:hover{border-color:var(--red);color:var(--red)}
 .quote-modal-add{display:flex;gap:4px;margin-bottom:6px}
-.quote-modal-add input{flex:1;background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:5px 8px;font-family:var(--font);font-size:14px;font-style:italic}
-.quote-modal-add input:focus{outline:none;border-color:var(--gold)}
+.quote-modal-add textarea{flex:1;min-width:0;min-height:64px;resize:vertical;background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:5px 8px;font-family:var(--font);font-size:14px;font-style:italic;white-space:pre-wrap}
+.quote-modal-add textarea:focus{outline:none;border-color:var(--gold)}
 .quote-modal-add button{background:var(--gold);color:#000;border:none;border-radius:4px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:13px}
 .quote-modal-close{background:var(--border2);color:var(--text);border:none;border-radius:4px;padding:5px 14px;cursor:pointer;font-size:14px;margin-top:6px;width:100%}
 
@@ -303,7 +340,7 @@ td .del-btn:hover{border-color:var(--red);color:var(--red)}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 @keyframes slideOut{from{opacity:1}to{opacity:0;transform:translateX(20px)}}
 
-.confirm-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9998;display:flex;align-items:center;justify-content:center}
+.confirm-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:10002;display:flex;align-items:center;justify-content:center}
 .confirm-box{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:16px;max-width:300px;text-align:center}
 .confirm-box p{margin-bottom:12px;font-size:14px}
 .confirm-box .cb-row{display:flex;gap:6px;justify-content:center}
@@ -351,7 +388,55 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 .pf-edit-row button{background:var(--gold);color:#000;border:none;border-radius:4px;padding:4px 10px;font-weight:700;cursor:pointer;font-size:12px}
 .pf-edit-row .pf-edit-cancel{background:var(--border2);color:var(--text)}
 
+
+.investor-rail{display:none;position:fixed;top:50%;transform:translateY(-50%);width:280px;z-index:4;padding:20px;background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--border2);border-radius:10px;box-shadow:0 12px 36px var(--shadow);transition:opacity .35s ease,transform .35s ease;}
+.investor-rail.is-changing{opacity:0;transform:translateY(calc(-50% + 6px))}
+.investor-portrait-rail{left:calc((100vw - 1240px)/2 - 300px)}
+.investor-quote-rail{right:calc((100vw - 1240px)/2 - 300px);}
+.investor-kicker{font-size:10px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:10px}
+.investor-photo-frame{height:390px;border-radius:7px;overflow:hidden;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative}
+.investor-photo{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);opacity:.9;transition:opacity .35s ease,transform .5s ease}
+.investor-photo:hover{opacity:1;transform:scale(1.025)}
+.investor-monogram{font-family:Georgia,serif;font-size:60px;letter-spacing:3px;color:var(--gold);opacity:.75}
+.investor-person-name{font-size:15px;font-weight:700;color:var(--text);margin-top:10px}
+.investor-person-role{font-size:11px;color:var(--text-dim);line-height:1.45;margin-top:2px}
+.investor-quote-mark{font-family:Georgia,serif;font-size:48px;line-height:.8;color:var(--gold);opacity:.8;margin:12px 0 8px}
+.investor-quote-text{font-family:Arial,"Segoe UI",sans-serif;font-size:24px;line-height:1.55;color:var(--text);min-height:235px;letter-spacing:normal;word-spacing:normal;font-kerning:normal}
+.investor-quote-author{font-size:13px;font-weight:700;color:var(--gold);margin-top:12px}
+.investor-quote-source{font-size:11px;color:var(--text-dim);line-height:1.45;margin-top:4px;min-height:30px}
+.investor-controls{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);margin-top:14px;padding-top:10px}
+.investor-control-buttons{display:flex;gap:5px}
+.investor-control-buttons button{width:28px;height:26px;border:1px solid var(--border2);border-radius:4px;background:var(--card2);color:var(--text-dim);cursor:pointer;font-size:13px}
+.investor-control-buttons button:hover{border-color:var(--gold);color:var(--gold)}
+.investor-counter{font-size:11px;color:var(--text-dim);letter-spacing:.8px}
+
+.gallery-toolbar-button{display:none}
+.investor-add-button{width:100%;margin-top:10px;padding:9px 10px;background:var(--gold-dim);border:1px solid rgba(201,168,76,.35);border-radius:5px;color:var(--gold);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.investor-add-button:hover{background:var(--gold);color:#000}
+.investor-modal[hidden]{display:none!important}
+.investor-modal{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:16px}
+.investor-modal-box{width:min(620px,96vw);max-height:90vh;overflow-y:auto;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.65)}
+.investor-modal-title{font-size:17px;font-weight:700;color:var(--gold);margin-bottom:12px}
+.investor-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.investor-modal-field{display:flex;flex-direction:column;gap:4px;margin-bottom:9px;min-width:0}
+.investor-modal-field label{font-size:12px;color:var(--text-dim)}
+.investor-modal-field input,.investor-modal-field textarea{width:100%;background:var(--card2);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:8px;font-family:var(--font);font-size:14px}
+.investor-modal-field input:focus,.investor-modal-field textarea:focus{outline:none;border-color:var(--gold)}
+.investor-modal-field textarea{min-height:90px;resize:vertical}
+.investor-image-preview{display:none;width:90px;height:110px;object-fit:cover;filter:grayscale(100%);border-radius:5px;border:1px solid var(--border2);margin-top:6px}
+.investor-modal-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}
+.investor-modal-actions button{border:1px solid var(--border2);border-radius:4px;padding:7px 14px;background:var(--card2);color:var(--text);cursor:pointer}
+.investor-modal-actions .investor-modal-save{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
+.investor-custom-list{border-top:1px solid var(--border);margin-top:14px;padding-top:10px}
+.investor-custom-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.investor-custom-row .investor-row-actions{display:flex;gap:5px;flex-shrink:0}.investor-custom-row button{background:none;border:1px solid var(--border2);border-radius:4px;color:var(--text-dim);padding:3px 8px;cursor:pointer}.investor-custom-row button:hover{border-color:var(--gold);color:var(--gold)}.investor-custom-row button[data-delete-investor]{color:var(--red)}
+@media(max-width:650px){.investor-modal-grid{grid-template-columns:1fr}}
+
+@media(min-width:1900px){.investor-rail{display:block}}
+@media(max-width:1899px){.gallery-toolbar-button{display:inline-flex}}
+
 @media(max-width:768px){
+  .daily-plan-grid,.daily-plan-scenarios,.daily-plan-levels{grid-template-columns:1fr}
   body{padding:8px}
   .header{padding:12px 0 6px}
   .header h1{font-size:20px;letter-spacing:1px}
@@ -363,7 +448,7 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
   .grid-3col{grid-template-columns:1fr}
   .form-group{flex:1 1 100%}
   .form-row{gap:4px}
-  .form-group input,.form-group select{font-size:16px}
+  .form-group input,.form-group select,.form-group textarea{font-size:16px}
   .time-picker select.dd{min-width:38px;padding:6px 2px}
   .hide-mobile{display:none!important}
   .cal-table td{height:56px;padding:2px 1px}
@@ -400,10 +485,42 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 </head>
 <body>
 
+<aside class="investor-rail investor-portrait-rail" id="investorPortraitRail" aria-label="Investor portrait">
+  <div class="investor-kicker">Investor spotlight</div>
+  <div class="investor-photo-frame"><div class="investor-monogram" id="investorMonogram"></div><img class="investor-photo" id="investorPhoto" alt=""></div>
+  <div class="investor-person-name" id="investorName"></div>
+  <div class="investor-person-role" id="investorRole"></div>
+</aside>
+<aside class="investor-rail investor-quote-rail" id="investorQuoteRail" aria-label="Investor quote">
+  <div class="investor-kicker">Trading wisdom</div>
+  <div class="investor-quote-mark">“</div>
+  <div class="investor-quote-text" id="investorQuote"></div>
+  <div class="investor-quote-author" id="investorQuoteAuthor"></div>
+  <div class="investor-quote-source" id="investorQuoteSource"></div>
+  <div class="investor-controls"><div class="investor-control-buttons"><button type="button" onclick="investorPrevious()" aria-label="Previous investor">&#9664;</button><button type="button" id="investorPauseButton" onclick="toggleInvestorPause()" aria-label="Pause rotation">&#10074;&#10074;</button><button type="button" onclick="investorNext()" aria-label="Next investor">&#9654;</button></div><span class="investor-counter" id="investorCounter"></span></div>
+  <button class="investor-add-button" type="button" onclick="openInvestorManager()">＋ Add photo &amp; quote</button>
+</aside>
+
+<div class="investor-modal" id="investorEditorModal" hidden>
+  <div class="investor-modal-box">
+    <div class="investor-modal-title" id="investorModalTitle">Add an investor</div>
+    <div class="investor-modal-grid">
+      <div class="investor-modal-field"><label for="investorUploadName">Name</label><input id="investorUploadName" type="text" placeholder="Investor name"></div>
+      <div class="investor-modal-field"><label for="investorUploadRole">Title / role (optional)</label><input id="investorUploadRole" type="text" placeholder="Investor, trader, author..."></div>
+    </div>
+    <div class="investor-modal-field"><label for="investorUploadQuote">Quote</label><textarea id="investorUploadQuote" placeholder="Type or paste the quote..."></textarea></div>
+    <div class="investor-modal-grid">
+      <div class="investor-modal-field"><label for="investorUploadSource">Source (optional)</label><input id="investorUploadSource" type="text" placeholder="Book, interview, letter..."></div>
+      <div class="investor-modal-field"><label for="investorUploadImage">Portrait image</label><input id="investorUploadImage" type="file" accept="image/*"><img class="investor-image-preview" id="investorImagePreview" alt="Image preview"></div>
+    </div>
+    <div class="investor-custom-list" id="investorCustomList"></div>
+    <div class="investor-modal-actions"><button type="button" onclick="closeInvestorManager()">Cancel</button><button class="investor-modal-save" id="investorSaveButton" type="button" onclick="saveCustomInvestor()">Add</button></div>
+  </div>
+</div>
+
 <div class="tab-bar">
   <div class="tab-bar-left">
-    <button class="tab-btn active" onclick="switchTab('journal')">Journal</button>
-    <button class="tab-btn" onclick="switchTab('portfolio')">Portfolio</button>
+    <button class="action-btn gallery-toolbar-button" type="button" onclick="openInvestorManager()">＋ Add investor</button>
   </div>
   <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Toggle dark/light mode">&#9790;</button>
 </div>
@@ -413,7 +530,7 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
   <h1>Trading Journal</h1>
   <div class="quote-wrap" id="quoteWrap">
     <div id="quoteListDisplay"></div>
-    <input class="quote-input" id="quoteInput" type="text">
+    <textarea class="quote-input" id="quoteInput"></textarea>
     <div class="quote-actions">
       <button onclick="saveQuoteEdit()">Save</button>
       <button class="qa-del" onclick="cancelQuoteEdit()">Cancel</button>
@@ -509,15 +626,60 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
   <div class="mp-tooltip" id="mpTooltip" style="display:none"></div>
 </div>
 
-<div id="routine-section" class="section">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <div class="section-title" style="margin-bottom:0">Daily Routine</div>
-    <div style="display:flex;gap:6px">
-      <button class="action-btn" style="padding:2px 8px;font-size:12px" onclick="resetRoutine()" title="Reset all checks">&#8635;</button>
-      <button class="action-btn" style="padding:2px 8px;font-size:12px" onclick="openRoutineModal()" title="Manage routine">&#9881;</button>
+<div id="daily-plan-section" class="section">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+      <div class="section-title" style="margin-bottom:0">Daily Trading Plan</div>
+      <div style="display:flex;gap:6px">
+        <button class="action-btn" id="dailyPlanSaveBtn" onclick="saveDailyPlan()">Save</button>
+        <button class="action-btn" id="dailyPlanEditBtn" onclick="editDailyPlan()">Edit</button>
+        <button class="action-btn danger" id="dailyPlanResetBtn" onclick="resetDailyPlan()">Reset</button>
+      </div>
+    </div>
+    <div class="form-group" style="flex:0 1 180px"><label for="dailyPlanDate">Plan Date</label><input type="date" id="dailyPlanDate"></div>
+  </div>
+  <datalist id="dailyPlanAssets"><option value="BTC"><option value="ETH"><option value="XAUUSD"><option value="EURUSD"><option value="GBPUSD"><option value="US30"><option value="NAS100"><option value="SPX500"></datalist>
+  <div class="daily-plan-grid">
+    <div class="daily-plan-card">
+      <div class="daily-plan-card-title">1. Xu hướng chung</div>
+      <div class="form-group daily-plan-asset"><label for="planGeneralAsset">Asset</label><input id="planGeneralAsset" class="daily-plan-input" data-plan-field="generalAsset" list="dailyPlanAssets" placeholder="Chọn hoặc nhập asset"></div>
+      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th></tr></thead><tbody>
+        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="0"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="0"></td></tr>
+        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="1"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="1"></td></tr>
+        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="2"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="2"></td></tr>
+        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="3"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="3"></td></tr>
+        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="4"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="4"></td></tr>
+      </tbody></table>
+      <div class="form-group daily-plan-conclusion"><label for="planGeneralConclusion">Kết luận</label><textarea id="planGeneralConclusion" class="daily-plan-input" data-plan-field="generalConclusion" placeholder="Ghi kết luận xu hướng chung..."></textarea></div>
+    </div>
+    <div class="daily-plan-card">
+      <div class="daily-plan-card-title">2. Khung thời gian</div>
+      <div class="form-group daily-plan-asset"><label for="planTimeframeAsset">Asset</label><input id="planTimeframeAsset" class="daily-plan-input" data-plan-field="timeframeAsset" list="dailyPlanAssets" placeholder="Chọn hoặc nhập asset"></div>
+      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th></tr></thead><tbody>
+        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="0"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="0"></td></tr>
+        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="1"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="1"></td></tr>
+        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="2"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="2"></td></tr>
+        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="3"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="3"></td></tr>
+        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="4"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="4"></td></tr>
+      </tbody></table>
+      <div class="form-group daily-plan-conclusion"><label for="planTimeframeConclusion">Kết luận</label><textarea id="planTimeframeConclusion" class="daily-plan-input" data-plan-field="timeframeConclusion" placeholder="Ghi kết luận khung thời gian..."></textarea></div>
     </div>
   </div>
-  <div class="routine-wrap" id="routineWrap"></div>
+  <div class="daily-plan-card daily-plan-scenario-section">
+    <div class="daily-plan-card-title">3. Kịch bản</div>
+    <div class="daily-plan-levels">
+      <div class="form-group"><label for="planResistance">Kháng cự</label><input id="planResistance" class="daily-plan-input" data-plan-field="resistance" placeholder="Nhập vùng/giá kháng cự"></div>
+      <div class="form-group"><label for="planSupport">Hỗ trợ</label><input id="planSupport" class="daily-plan-input" data-plan-field="support" placeholder="Nhập vùng/giá hỗ trợ"></div>
+    </div>
+    <div class="daily-plan-scenarios">
+      <div class="daily-plan-card"><div class="daily-plan-card-title">Kịch bản tăng</div><textarea id="planBullScenario" class="daily-plan-input daily-plan-scenario" data-plan-field="bullScenario" placeholder="Điều kiện và cách xử lý khi giá tăng..."></textarea>
+        <div class="daily-plan-scenario-meta"><div class="daily-plan-meta-group"><label for="planBullRating">Chấm điểm</label><select id="planBullRating" class="daily-plan-input daily-plan-select" data-plan-field="bullRating"><option value="">Chọn</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></div><div class="daily-plan-meta-group"><label for="planBullMindset">Tư duy</label><select id="planBullMindset" class="daily-plan-input daily-plan-select" data-plan-field="bullMindset"><option value="">Chọn</option><option>Kỳ vọng</option><option>Cẩn trọng</option></select></div></div>
+      </div>
+      <div class="daily-plan-card"><div class="daily-plan-card-title">Kịch bản giảm</div><textarea id="planBearScenario" class="daily-plan-input daily-plan-scenario" data-plan-field="bearScenario" placeholder="Điều kiện và cách xử lý khi giá giảm..."></textarea>
+        <div class="daily-plan-scenario-meta"><div class="daily-plan-meta-group"><label for="planBearRating">Chấm điểm</label><select id="planBearRating" class="daily-plan-input daily-plan-select" data-plan-field="bearRating"><option value="">Chọn</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></div><div class="daily-plan-meta-group"><label for="planBearMindset">Tư duy</label><select id="planBearMindset" class="daily-plan-input daily-plan-select" data-plan-field="bearMindset"><option value="">Chọn</option><option>Kỳ vọng</option><option>Cẩn trọng</option></select></div></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="form-section" class="section">
@@ -594,18 +756,26 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
       <input type="number" id="tradeR" placeholder="e.g. 2, -1" step="0.01">
     </div>
   </div>
+
+
   <div class="form-row">
     <div class="form-group">
-      <label>Emotion</label>
-      <select id="tradeEmotion">
-        <option value="">Select...</option>
-        <option value="Lý trí">Lý trí</option>
-        <option value="Cảm xúc">Cảm xúc</option>
-      </select>
+      <label>Lý do vào lệnh</label>
+      <textarea id="tradeEntryReason" placeholder="Vì sao bạn vào lệnh?"></textarea>
     </div>
     <div class="form-group">
-      <label>Mistake (optional)</label>
-      <input type="text" id="tradeMistake" placeholder="e.g. Overtrade">
+      <label>Lý do chốt lệnh</label>
+      <textarea id="tradeExitReason" placeholder="Vì sao bạn chốt lệnh?"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Rút kinh nghiệm</label>
+      <textarea id="tradeLesson" placeholder="Bạn học được gì từ lệnh này?"></textarea>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>TradingView Chart Link</label>
+      <input type="url" id="tradeChartLink" placeholder="Paste chart snapshot link here">
     </div>
   </div>
   <button class="save-btn" id="saveTradeBtn" onclick="saveTrade()">Save Trade</button>
@@ -631,8 +801,6 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
           <th>Result</th>
           <th>R</th>
           <th>PnL</th>
-          <th>Emotion</th>
-          <th>Mistake</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -661,63 +829,9 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 
 </div>
 
-<div id="portfolioTab" style="display:none">
-  <div class="section">
-    <div class="section-title">Portfolio Summary</div>
-    <div class="pf-summary-grid" id="pfSummaryGrid"></div>
-  </div>
-  <div class="section">
-    <div class="section-title">Add Position</div>
-    <div class="pf-form-row">
-      <div class="form-group">
-        <label>Coin</label>
-        <input type="text" id="pfCoinInput" placeholder="e.g. Bitcoin" autocomplete="off">
-        <div class="pf-coin-suggest" id="pfCoinSuggest" style="display:none"></div>
-      </div>
-      <div class="form-group">
-        <label>Quantity</label>
-        <input type="text" id="pfQtyInput" placeholder="0.00" inputmode="decimal">
-      </div>
-      <div class="form-group">
-        <label>Buy Price ($)</label>
-        <input type="number" id="pfPriceInput" placeholder="0.00" step="any" min="0">
-      </div>
-      <div class="form-group">
-        <label>Buy Date</label>
-        <input type="date" id="pfDateInput">
-      </div>
-    </div>
-    <button class="save-btn" onclick="pfSavePosition()">Add Position</button>
-  </div>
-  <div class="section">
-    <div class="section-title">Holdings</div>
-    <div style="overflow-x:auto">
-      <table class="pf-tbl" id="pfTable">
-        <thead>
-          <tr>
-            <th>Coin</th>
-            <th>Qty</th>
-            <th>Avg Price</th>
-            <th>Current Price</th>
-            <th>Value</th>
-            <th>PnL</th>
-            <th>PnL %</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="pfBody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="section">
-    <div class="section-title">Allocation</div>
-    <canvas id="pfPieCanvas" height="280"></canvas>
-    <div class="pf-legend" id="pfLegend"></div>
-  </div>
-</div>
-
 <input type="file" id="csvFileInput" accept=".csv" style="display:none">
 
+<script src="investor-gallery.js"></script>
 <script>
 var firebaseConfig = {
   apiKey: "AIzaSyD9I08mlVS3lVbVcZ6xZmNhLDzjSgdVFew",
@@ -742,7 +856,7 @@ function fbSave() {
 function fbLoad(callback) {
   fbDb.ref('journal').once('value', function(snap) {
     var remote = snap.val();
-    if (remote && (remote.trades || remote.setups || remote.dailyRoutine)) {
+    if (remote && (remote.trades || remote.setups || remote.dailyRoutine || remote.dailyPlans)) {
       callback(remote);
     } else {
       callback(null);
@@ -757,16 +871,19 @@ function fbListen() {
   fbDb.ref('journal').on('value', function(snap) {
     if (fbSyncing) return;
     var remote = snap.val();
-    if (remote && (remote.trades || remote.setups || remote.dailyRoutine)) {
+    if (remote && (remote.trades || remote.setups || remote.dailyRoutine || remote.dailyPlans)) {
+      var cachedQuotes = Array.isArray(data.quotes) ? data.quotes.slice() : [];
       data = remote;
       if (!data.trades) data.trades = [];
       if (!data.portfolio) data.portfolio = [];
       if (!data.setups) data.setups = [];
-      if (!data.quotes) data.quotes = [];
+      if (!Array.isArray(data.quotes) || !data.quotes.length) data.quotes = cachedQuotes.length ? cachedQuotes : ['"Discipline is the bridge between goals and achievement."'];
       if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
       if (!data.dailyRoutine) data.dailyRoutine = [];
+      if (!data.dailyPlans) data.dailyPlans = {};
+      if (!Array.isArray(data.investorGalleryCustom)) data.investorGalleryCustom = [];
       try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
-      try { refreshAll(); } catch(e) {}
+      try { loadCustomInvestorItems(); renderInvestorGallery(Math.max(0,Math.min(investorGalleryIndex,investorGalleryItems.length - 1)), false); startInvestorRotation(); renderDailyPlan(); refreshAll(); } catch(e) {}
     }
   });
 }
@@ -778,6 +895,8 @@ var data = {
   maxLossPct: 0,
   dailyLossLimit: 0,
   checklistMode: 'strict',
+  dailyPlans: {},
+  investorGalleryCustom: [],
   dailyRoutine: [
     { text: 'Review market overview & news' },
     { text: 'Check economic calendar' },
@@ -849,6 +968,9 @@ function load() {
   ];
   if (!data.setups) data.setups = [];
   if (!data.quotes) data.quotes = ['"Discipline is the bridge between goals and achievement."'];
+  if (!data.quotes.length) data.quotes = ['"Discipline is the bridge between goals and achievement."'];
+  if (!Array.isArray(data.investorGalleryCustom)) data.investorGalleryCustom = [];
+  if (!data.quoteAlignments) data.quoteAlignments = [];
   if (data.currentQuoteIdx === undefined) data.currentQuoteIdx = 0;
   if (data.currentQuoteIdx >= data.quotes.length) data.currentQuoteIdx = 0;
   if (!data.portfolio) data.portfolio = [];
@@ -935,15 +1057,266 @@ function setWeekFilter(val) {
   updateWeekly();
 }
 
-function updateQuoteDisplay() {
-  var container = document.getElementById('quoteListDisplay');
-  if (data.quotes.length === 0) {
-    container.innerHTML = '';
+var investorGalleryIndex = 0;
+var investorRotationTimer = null;
+var investorTransitionTimer = null;
+var investorManuallyPaused = false;
+var investorHoverCount = 0;
+var investorCustomItems = [];
+var investorGalleryItems = window.investorGallery || [];
+var investorPendingImageData = '';
+var investorEditingId = null;
+function loadCustomInvestorItems() {
+  if (!Array.isArray(data.investorGalleryCustom)) data.investorGalleryCustom = [];
+  if (!data.investorGalleryEdits || typeof data.investorGalleryEdits !== 'object') data.investorGalleryEdits = {};
+  investorCustomItems = data.investorGalleryCustom;
+  var builtIns = (window.investorGallery || []).map(function(item, index) {
+    var id = 'seed_' + index;
+    return Object.assign({}, item, data.investorGalleryEdits[id] || {}, {_galleryId: id, custom: false});
+  });
+  investorGalleryItems = builtIns.concat(investorCustomItems.map(function(item) {
+    return Object.assign({}, item, {_galleryId: item.id, custom: true});
+  }));
+}
+
+function persistCustomInvestorItems() {
+  try {
+    data.investorGalleryCustom = investorCustomItems;
+    save();
+    loadCustomInvestorItems();
+    return true;
+  } catch(e) {
+    showToast('Could not save gallery. Try a smaller image.', 'error');
+    return false;
+  }
+}
+
+function resetInvestorEditor() {
+  investorEditingId = null;
+  document.getElementById('investorModalTitle').textContent = 'Add an investor';
+  document.getElementById('investorSaveButton').textContent = 'Add';
+  document.getElementById('investorUploadName').value = '';
+  document.getElementById('investorUploadRole').value = '';
+  document.getElementById('investorUploadQuote').value = '';
+  document.getElementById('investorUploadSource').value = '';
+  document.getElementById('investorUploadImage').value = '';
+  document.getElementById('investorImagePreview').style.display = 'none';
+  investorPendingImageData = '';
+}
+
+function openInvestorManager() {
+  var modal = document.getElementById('investorEditorModal');
+  modal.hidden = false;
+  resetInvestorEditor();
+  renderInvestorCustomList();
+}
+
+function closeInvestorManager() { document.getElementById('investorEditorModal').hidden = true; }
+
+function renderInvestorCustomList() {
+  var list = document.getElementById('investorCustomList');
+  if (!investorGalleryItems.length) { list.innerHTML = '<div style="font-size:12px;color:var(--text-dim)">No gallery items yet.</div>'; return; }
+  list.innerHTML = '<div style="font-size:12px;color:var(--text-dim);margin-bottom:4px">Gallery items — edit built-in and uploaded entries</div>' + investorGalleryItems.map(function(item) {
+    var id = escapeQuoteHtml(item._galleryId || item.id);
+    return '<div class="investor-custom-row"><span>' + escapeQuoteHtml(item.name) + (item.custom ? '' : ' <small style="color:var(--text-dim)">(built-in)</small>') + '</span><span class="investor-row-actions"><button type="button" data-edit-investor="' + id + '">Edit</button>' + (item.custom ? '<button type="button" data-delete-investor="' + id + '">Delete</button>' : '') + '</span></div>';
+  }).join('');
+  list.querySelectorAll('[data-edit-investor]').forEach(function(button) {
+    button.addEventListener('click', function() { editInvestorItem(this.getAttribute('data-edit-investor')); });
+  });
+  list.querySelectorAll('[data-delete-investor]').forEach(function(button) {
+    button.addEventListener('click', function() { deleteCustomInvestor(this.getAttribute('data-delete-investor')); });
+  });
+}
+
+function editInvestorItem(id) {
+  var item = investorGalleryItems.find(function(entry) { return (entry._galleryId || entry.id) === id; });
+  if (!item) return;
+  investorEditingId = id;
+  document.getElementById('investorEditorModal').querySelector('.investor-modal-box').scrollTop = 0;
+  document.getElementById('investorModalTitle').textContent = 'Edit investor';
+  document.getElementById('investorSaveButton').textContent = 'Save changes';
+  document.getElementById('investorUploadName').value = item.name || '';
+  document.getElementById('investorUploadRole').value = item.role || '';
+  document.getElementById('investorUploadQuote').value = item.quote || '';
+  document.getElementById('investorUploadSource').value = item.source || '';
+  document.getElementById('investorUploadImage').value = '';
+  investorPendingImageData = '';
+  var preview = document.getElementById('investorImagePreview');
+  if (item.image) { preview.src = item.image; preview.style.display = 'block'; }
+  else preview.style.display = 'none';
+}
+
+function handleInvestorImageSelection(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  if (!file.type || file.type.indexOf('image/') !== 0) { showToast('Choose an image file', 'error'); input.value = ''; return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var image = new Image();
+    image.onload = function() {
+      var maxSide = 560;
+      var ratio = Math.min(1, maxSide / Math.max(image.width, image.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(image.width * ratio));
+      canvas.height = Math.max(1, Math.round(image.height * ratio));
+      canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+      investorPendingImageData = canvas.toDataURL('image/jpeg', 0.72);
+      var preview = document.getElementById('investorImagePreview');
+      preview.src = investorPendingImageData;
+      preview.style.display = 'block';
+    };
+    image.onerror = function() { showToast('Could not read this image', 'error'); };
+    image.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveCustomInvestor() {
+  var name = document.getElementById('investorUploadName').value.trim();
+  var quote = document.getElementById('investorUploadQuote').value.trim().normalize('NFC');
+  var role = document.getElementById('investorUploadRole').value.trim();
+  var source = document.getElementById('investorUploadSource').value.trim();
+  if (!name) { showToast('Enter a name', 'error'); return; }
+  if (!quote) { showToast('Enter a quote', 'error'); return; }
+  var wasEditing = !!investorEditingId;
+  var previousCustom = JSON.stringify(investorCustomItems);
+  var previousEdits = JSON.stringify(data.investorGalleryEdits || {});
+  if (investorEditingId) {
+    var existing = investorGalleryItems.find(function(entry) { return (entry._galleryId || entry.id) === investorEditingId; });
+    if (!existing) { showToast('Gallery item not found', 'error'); return; }
+    var updated = {name: name, role: role, quote: quote, source: source, image: investorPendingImageData || existing.image || ''};
+    if (existing.custom) {
+      var customIndex = investorCustomItems.findIndex(function(entry) { return entry.id === investorEditingId; });
+      if (customIndex < 0) { showToast('Gallery item not found', 'error'); return; }
+      investorCustomItems[customIndex] = Object.assign({}, investorCustomItems[customIndex], updated);
+    } else {
+      if (!data.investorGalleryEdits || typeof data.investorGalleryEdits !== 'object') data.investorGalleryEdits = {};
+      data.investorGalleryEdits[investorEditingId] = updated;
+    }
+  } else {
+    if (!investorPendingImageData) { showToast('Choose a portrait image', 'error'); return; }
+    investorCustomItems.push({
+      id: 'custom_' + Date.now(), name: name, role: role, quote: quote,
+      source: source, image: investorPendingImageData, custom: true
+    });
+  }
+  if (!persistCustomInvestorItems()) {
+    investorCustomItems = JSON.parse(previousCustom);
+    data.investorGalleryCustom = investorCustomItems;
+    data.investorGalleryEdits = JSON.parse(previousEdits);
+    loadCustomInvestorItems();
     return;
   }
+  var savedId = investorEditingId || investorCustomItems[investorCustomItems.length - 1].id;
+  closeInvestorManager();
+  resetInvestorEditor();
+  var savedIndex = investorGalleryItems.findIndex(function(entry) { return (entry._galleryId || entry.id) === savedId; });
+  investorGalleryIndex = savedIndex >= 0 ? savedIndex : Math.max(0, investorGalleryIndex);
+  renderInvestorGallery(investorGalleryIndex, true);
+  renderInvestorCustomList();
+  startInvestorRotation();
+  showToast(wasEditing ? 'Investor changes saved' : 'Investor added and saved with your journal', 'success');
+}function deleteCustomInvestor(id) {
+  showConfirm('Delete this uploaded investor?', function(yes) {
+    if (!yes) return;
+    investorCustomItems = investorCustomItems.filter(function(item) { return item.id !== id; });
+    if (!persistCustomInvestorItems()) return;
+    investorGalleryIndex = Math.min(investorGalleryIndex, investorGalleryItems.length - 1);
+    if (investorGalleryIndex < 0) investorGalleryIndex = 0;
+    renderInvestorGallery(investorGalleryIndex, true);
+    renderInvestorCustomList();
+    startInvestorRotation();
+  });
+}
+
+function renderInvestorGallery(index, animate) {
+  var portrait = document.getElementById('investorPortraitRail');
+  var quotePanel = document.getElementById('investorQuoteRail');
+  if (!investorGalleryItems.length) { portrait.style.display = 'none'; quotePanel.style.display = 'none'; return; }
+  investorGalleryIndex = (index + investorGalleryItems.length) % investorGalleryItems.length;
+  var item = investorGalleryItems[investorGalleryIndex];
+  var token = Date.now() + Math.random();
+  renderInvestorGallery.token = token;
+  function paint() {
+    if (renderInvestorGallery.token !== token) return;
+    document.getElementById('investorName').textContent = item.name || '';
+    document.getElementById('investorRole').textContent = item.role || '';
+    document.getElementById('investorQuote').textContent = String(item.quote || '').normalize('NFC');
+    document.getElementById('investorQuoteAuthor').textContent = item.name || '';
+    document.getElementById('investorQuoteSource').textContent = item.source || '';
+    document.getElementById('investorCounter').textContent = String(investorGalleryIndex + 1).padStart(2, '0') + ' / ' + String(investorGalleryItems.length).padStart(2, '0');
+    var initials = String(item.name || '?').split(/\s+/).filter(Boolean).slice(-2).map(function(part) { return part.charAt(0); }).join('').toUpperCase();
+    var image = document.getElementById('investorPhoto');
+    var monogram = document.getElementById('investorMonogram');
+    image.onload = function() { image.style.display = 'block'; monogram.style.display = 'none'; };
+    image.onerror = function() { image.style.display = 'none'; monogram.textContent = initials; monogram.style.display = 'block'; };
+    image.style.display = item.image ? 'block' : 'none';
+    monogram.textContent = initials;
+    monogram.style.display = item.image ? 'none' : 'block';
+    if (item.image) image.src = item.image;
+    else image.removeAttribute('src');
+    portrait.style.display = '';
+    quotePanel.style.display = '';
+    portrait.classList.remove('is-changing');
+    quotePanel.classList.remove('is-changing');
+  }
+  if (investorTransitionTimer) clearTimeout(investorTransitionTimer);
+  if (animate) {
+    portrait.classList.add('is-changing');
+    quotePanel.classList.add('is-changing');
+    investorTransitionTimer = setTimeout(paint, 260);
+  } else paint();
+}
+
+function startInvestorRotation() {
+  if (investorRotationTimer) clearInterval(investorRotationTimer);
+  if (investorManuallyPaused || investorGalleryItems.length < 2) return;
+  investorRotationTimer = setInterval(function() { renderInvestorGallery(investorGalleryIndex + 1, true); }, 30000);
+}
+
+function investorNext() { renderInvestorGallery(investorGalleryIndex + 1, true); startInvestorRotation(); }
+function investorPrevious() { renderInvestorGallery(investorGalleryIndex - 1, true); startInvestorRotation(); }
+
+function toggleInvestorPause() {
+  investorManuallyPaused = !investorManuallyPaused;
+  var button = document.getElementById('investorPauseButton');
+  button.innerHTML = investorManuallyPaused ? '&#9654;' : '&#10074;&#10074;';
+  button.setAttribute('aria-label', investorManuallyPaused ? 'Resume rotation' : 'Pause rotation');
+  startInvestorRotation();
+}
+
+function initInvestorGallery() {
+  loadCustomInvestorItems();
+  document.getElementById('investorUploadImage').addEventListener('change', function() { handleInvestorImageSelection(this); });
+  document.getElementById('investorEditorModal').addEventListener('click', function(e) { if (e.target === this) closeInvestorManager(); });
+  renderInvestorGallery(0, false);
+  startInvestorRotation();
+}
+
+function escapeQuoteHtml(value) {
+  var d = document.createElement('div');
+  d.textContent = value === undefined || value === null ? '' : String(value);
+  return d.innerHTML;
+}
+
+function quoteItemHtml(q, i) {
+  var alignment = (data.quoteAlignments && data.quoteAlignments[i]) || 'center';
+  return '<div class="quote-list-item"><textarea data-qi="' + i + '">' + escapeQuoteHtml(q) + '</textarea>' +
+    '<select data-qalign="' + i + '" aria-label="Quote alignment">' +
+    '<option value="left"' + (alignment === 'left' ? ' selected' : '') + '>Left</option>' +
+    '<option value="center"' + (alignment === 'center' ? ' selected' : '') + '>Center</option>' +
+    '<option value="right"' + (alignment === 'right' ? ' selected' : '') + '>Right</option>' +
+    '</select><button onclick="deleteQuoteItem(this,' + i + ')">×</button></div>';
+}
+
+function updateQuoteDisplay() {
+  var container = document.getElementById('quoteListDisplay');
+  if (!data.quoteAlignments) data.quoteAlignments = [];
+  if (data.quotes.length === 0) { container.innerHTML = ''; return; }
   var html = '';
-  data.quotes.forEach(function(q) {
-    html += '<div class="quote-line" onclick="openQuoteModal()">' + q + '</div>';
+  data.quotes.forEach(function(q, i) {
+    var alignment = data.quoteAlignments[i] || 'center';
+    html += '<div class="quote-line" style="text-align:' + alignment + '" onclick="openQuoteModal()">' + escapeQuoteHtml(q) + '</div>';
   });
   container.innerHTML = html;
 }
@@ -957,13 +1330,11 @@ function openQuoteModal() {
   var ov = document.createElement('div');
   ov.className = 'quote-modal';
   var itemsHtml = '';
-  data.quotes.forEach(function(q, i) {
-    itemsHtml += '<div class="quote-list-item"><input type="text" value="' + q.replace(/"/g, '&quot;') + '" data-qi="' + i + '"><button onclick="deleteQuoteItem(this,' + i + ')">×</button></div>';
-  });
+  data.quotes.forEach(function(q, i) { itemsHtml += quoteItemHtml(q, i); });
   if (data.quotes.length === 0) {
     itemsHtml = '<div style="color:var(--text-dim);font-size:14px;padding:6px 0">No quotes yet</div>';
   }
-  ov.innerHTML = '<div class="quote-modal-box"><h3>Manage Quotes</h3><div class="quote-modal-add"><input type="text" id="newQuoteInput" placeholder="Add a new quote..."><button onclick="addQuoteItem()">Add</button></div><div class="quote-list" id="quoteList">' + itemsHtml + '</div><button class="quote-modal-close" onclick="closeQuoteModal()">Done</button></div>';
+  ov.innerHTML = '<div class="quote-modal-box"><h3>Manage Quotes</h3><div class="quote-modal-add"><textarea id="newQuoteInput" placeholder="Add a new quote..."></textarea><button onclick="addQuoteItem()">Add</button></div><div class="quote-list" id="quoteList">' + itemsHtml + '</div><button class="quote-modal-close" onclick="closeQuoteModal()">Done</button></div>';
   document.body.appendChild(ov);
   ov.addEventListener('click', function(e) { if (e.target === ov) closeQuoteModal(); });
 }
@@ -972,37 +1343,46 @@ function addQuoteItem() {
   var inp = document.getElementById('newQuoteInput');
   var val = inp.value.trim();
   if (!val) return;
+  if (!data.quoteAlignments) data.quoteAlignments = [];
   data.quotes.push(val);
+  data.quoteAlignments.push('center');
   save();
   inp.value = '';
   var list = document.getElementById('quoteList');
   var emptyEl = list.querySelector('div[style]');
   if (emptyEl) emptyEl.remove();
-  var i = data.quotes.length - 1;
-  var item = document.createElement('div');
-  item.className = 'quote-list-item';
-  item.innerHTML = '<input type="text" value="' + val.replace(/"/g, '&quot;') + '" data-qi="' + i + '"><button onclick="deleteQuoteItem(this,' + i + ')">×</button>';
-  list.appendChild(item);
+  list.insertAdjacentHTML('beforeend', quoteItemHtml(val, data.quotes.length - 1));
   updateQuoteDisplay();
 }
 
+function syncQuoteModalToData() {
+  var inputs = document.querySelectorAll('.quote-list textarea[data-qi]');
+  inputs.forEach(function(inp) {
+    var i = parseInt(inp.getAttribute('data-qi'));
+    if (i < data.quotes.length) data.quotes[i] = inp.value.trim();
+  });
+  var aligns = document.querySelectorAll('.quote-list select[data-qalign]');
+  if (!data.quoteAlignments) data.quoteAlignments = [];
+  aligns.forEach(function(sel) {
+    var i = parseInt(sel.getAttribute('data-qalign'));
+    if (i < data.quotes.length) data.quoteAlignments[i] = sel.value;
+  });
+}
+
 function deleteQuoteItem(btn, idx) {
+  syncQuoteModalToData();
   data.quotes.splice(idx, 1);
+  if (data.quoteAlignments) data.quoteAlignments.splice(idx, 1);
   if (data.currentQuoteIdx >= data.quotes.length) data.currentQuoteIdx = Math.max(0, data.quotes.length - 1);
+  var modal = document.querySelector('.quote-modal');
+  if (modal) modal.remove();
   save();
-  closeQuoteModal();
   updateQuoteDisplay();
   openQuoteModal();
 }
 
 function closeQuoteModal() {
-  var inputs = document.querySelectorAll('.quote-list input[data-qi]');
-  inputs.forEach(function(inp) {
-    var i = parseInt(inp.getAttribute('data-qi'));
-    if (i < data.quotes.length) {
-      data.quotes[i] = inp.value.trim();
-    }
-  });
+  syncQuoteModalToData();
   save();
   updateQuoteDisplay();
   var modal = document.querySelector('.quote-modal');
@@ -1052,24 +1432,15 @@ function updateDashboard() {
   var trades = getFilteredTrades();
   var ic = data.initialCapital || 0;
   var totalPnl = 0, wins = 0, losses = 0;
-  var mistakeCounts = {};
   trades.forEach(function(t) {
     totalPnl += calcPnl(t);
     if (t.result === 'Win') wins++;
     else if (t.result === 'Loss') losses++;
-    if (t.mistake && t.mistake.trim()) {
-      var m = t.mistake.trim();
-      mistakeCounts[m] = (mistakeCounts[m] || 0) + 1;
-    }
   });
   var balance = ic + totalPnl;
   var ret = ic > 0 ? (totalPnl / ic) * 100 : 0;
   var total = wins + losses;
   var winrate = total > 0 ? (wins / total) * 100 : 0;
-  var topMistake = null, topCount = 0;
-  for (var k in mistakeCounts) {
-    if (mistakeCounts[k] > topCount) { topCount = mistakeCounts[k]; topMistake = k; }
-  }
   var h = '';
   h += '<div class="stat-card"><div class="stat-label">Initial Capital</div><div class="stat-value gold">' + fmtMoney(ic) + '</div></div>';
   h += '<div class="stat-card"><div class="stat-label">Current Balance</div><div class="stat-value ' + (balance < 0 ? 'red' : 'green') + '">' + fmtMoney(balance) + '</div></div>';
@@ -1077,7 +1448,6 @@ function updateDashboard() {
   h += '<div class="stat-card"><div class="stat-label">Return %</div><div class="stat-value ' + (ret >= 0 ? 'green' : 'red') + '">' + fmtPct(ret) + '</div></div>';
   h += '<div class="stat-card"><div class="stat-label">Total Trades</div><div class="stat-value gold">' + trades.length + '</div></div>';
   h += '<div class="stat-card"><div class="stat-label">Winrate</div><div class="stat-value ' + (winrate >= 50 ? 'green' : 'red') + '">' + fmtPct(winrate) + '</div></div>';
-  h += '<div class="stat-card"><div class="stat-label">Top Mistake</div><div class="stat-value red">' + (topMistake || '-') + '</div></div>';
   h += '<div class="stat-card"><div class="stat-label">1R Value</div><div class="stat-value gold">' + (data.riskPercent > 0 && ic > 0 ? fmtMoney(get1R()) : '-') + '</div></div>';
   document.getElementById('statsGrid').innerHTML = h;
 }
@@ -1136,7 +1506,7 @@ function updateProfitRisk() {
   h += '</div>';
 
   // Box 2: Risk (top-right)
-  h += '<div class="pr-col"><div class="pr-col-title risk">Risk (Monthly)</div>';
+  h += '<div class="pr-col"><div class="pr-col-title risk">Risk (Max Drawdown)</div>';
   h += '<div class="pr-row"><span class="pr-label">Max Drawdown</span><span class="pr-val red">' + fmtMoney(maxLossAmt) + '</span></div>';
   h += '<div class="pr-row"><span class="pr-label">Current Balance</span><span class="pr-val ' + (currentBalance >= minBalance ? 'green' : 'red') + '">' + fmtMoney(currentBalance) + '</span></div>';
   h += '<div class="pr-row"><span class="pr-label">Buffer Left</span><span class="pr-val ' + (remainingDrawdown <= maxLossAmt * 0.1 ? 'red' : (remainingDrawdown <= maxLossAmt * 0.5 ? 'orange' : 'green')) + '">' + fmtMoney(remainingDrawdown) + '</span></div>';
@@ -1174,13 +1544,13 @@ function updateProfitRisk() {
   if (maxLossAmt > 0) {
     var mlPctUsed = (currentDrawdown / maxLossAmt) * 100;
     if (mlPctUsed >= 100) {
-      mCls = 'danger shake'; mIcon = '&#x1f6a8;'; mTitle = 'MONTHLY STOP'; mMsg = 'BREACHED -$' + fmtComma(currentDrawdown);
+      mCls = 'danger shake'; mIcon = '&#x1f6a8;'; mTitle = 'STOP'; mMsg = 'BREACHED -$' + fmtComma(currentDrawdown);
     } else if (mlPctUsed >= 70) {
-      mCls = 'danger'; mIcon = '&#x1f6a8;'; mTitle = 'MONTHLY DANGER'; mMsg = fmtPct(mlPctUsed) + ' USED — STOP NOW';
+      mCls = 'danger'; mIcon = '&#x1f6a8;'; mTitle = 'DANGER'; mMsg = fmtPct(mlPctUsed) + ' USED — STOP NOW';
     } else if (mlPctUsed >= 50) {
-      mCls = 'warning'; mIcon = '&#x26a0;'; mTitle = 'MONTHLY WARNING'; mMsg = fmtPct(mlPctUsed) + ' USED — CUT RISK';
+      mCls = 'warning'; mIcon = '&#x26a0;'; mTitle = 'WARNING'; mMsg = fmtPct(mlPctUsed) + ' USED — CUT RISK';
     } else {
-      mCls = 'safe'; mIcon = '&#x2714;'; mTitle = 'MONTHLY SAFE'; mMsg = 'BUFFER: $' + fmtComma(remainingDrawdown);
+      mCls = 'safe'; mIcon = '&#x2714;'; mTitle = 'SAFE'; mMsg = 'BUFFER: $' + fmtComma(remainingDrawdown);
     }
   }
   h += '<div class="pr-status-item ' + mCls + '"><span class="ps-icon">' + mIcon + '</span><span class="ps-title">' + mTitle + '</span><span class="ps-msg">' + mMsg + '</span></div>';
@@ -1755,7 +2125,7 @@ function renderTable() {
   var trades = getFilteredTrades().slice().sort(function(a, b) { return b.id - a.id; });
   var tbody = document.getElementById('tradeBody');
   if (trades.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--text-dim);padding:14px">No trades recorded</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-dim);padding:14px">No trades recorded</td></tr>';
     return;
   }
   var html = '';
@@ -1772,8 +2142,6 @@ function renderTable() {
       '<td class="res-' + (t.result || '').toLowerCase() + '">' + t.result + '</td>' +
       '<td class="r-' + (t.rMultiple > 0 ? 'pos' : (t.rMultiple < 0 ? 'neg' : 'zero')) + '">' + t.rMultiple + '</td>' +
       '<td class="' + pc + '">' + (pnl >= 0 ? '+' : '') + Math.round(pnl) + '</td>' +
-      '<td>' + (t.emotion || '-') + '</td>' +
-      '<td>' + (t.mistake || '-') + '</td>' +
       '<td><button class="edit-btn" onclick="editTrade(' + String(t.id) + ')">Edit</button><button class="del-btn" onclick="deleteTrade(' + String(t.id) + ')">Del</button></td>' +
       '</tr>';
   });
@@ -1796,7 +2164,6 @@ function refreshAll() {
   try { renderTable(); } catch(e) {}
   try { populateSetupDropdown(); } catch(e) {}
   try { updateQuoteDisplay(); } catch(e) {}
-  try { renderRoutine(); } catch(e) {}
   try { renderChecklist(); } catch(e) {}
   try { updateReport(); } catch(e) {}
 }
@@ -1895,8 +2262,10 @@ function saveTrade() {
   var setup = document.getElementById('tradeSetup').value;
   var entry = document.getElementById('tradeEntry').value.trim();
   var r = parseFloat(document.getElementById('tradeR').value);
-  var emotion = document.getElementById('tradeEmotion').value;
-  var mistake = document.getElementById('tradeMistake').value.trim();
+  var entryReason = document.getElementById('tradeEntryReason').value.trim();
+  var exitReason = document.getElementById('tradeExitReason').value.trim();
+  var lesson = document.getElementById('tradeLesson').value.trim();
+  var chartLink = document.getElementById('tradeChartLink').value.trim();
 
   if (!date) { showToast('Date required', 'error'); return; }
   if (new Date(date) > new Date()) { showToast('Cannot add future trades', 'error'); return; }
@@ -1946,8 +2315,10 @@ function saveTrade() {
       data.trades[idx].bias = currentBias;
       data.trades[idx].result = currentResult;
       data.trades[idx].rMultiple = r;
-      data.trades[idx].emotion = emotion;
-      data.trades[idx].mistake = mistake;
+      data.trades[idx].entryReason = entryReason;
+      data.trades[idx].exitReason = exitReason;
+      data.trades[idx].lesson = lesson;
+      data.trades[idx].chartLink = chartLink;
       data.trades[idx].checklist = isChecklistComplete();
     }
     editingId = null;
@@ -1957,7 +2328,7 @@ function saveTrade() {
     data.trades.push({
       id: maxId + 1, date: date, time: time, pair: pair, setup: setup,
       entry: entry, bias: currentBias, result: currentResult,
-      rMultiple: r, emotion: emotion, mistake: mistake, checklist: isChecklistComplete()
+      rMultiple: r, entryReason: entryReason, exitReason: exitReason, lesson: lesson, chartLink: chartLink, checklist: isChecklistComplete()
     });
     showToast('Trade saved', 'success');
   }
@@ -1974,8 +2345,10 @@ function resetForm() {
   document.getElementById('tradeSetup').value = '';
   document.getElementById('tradeEntry').value = '';
   document.getElementById('tradeR').value = '';
-  document.getElementById('tradeEmotion').value = '';
-  document.getElementById('tradeMistake').value = '';
+  document.getElementById('tradeEntryReason').value = '';
+  document.getElementById('tradeExitReason').value = '';
+  document.getElementById('tradeLesson').value = '';
+  document.getElementById('tradeChartLink').value = '';
   currentBias = '';
   currentResult = '';
   editingId = null;
@@ -2160,8 +2533,142 @@ function closeChecklistModal() {
 
 var routineChecked = [];
 
+var dailyPlanDirty = false;
+var dailyPlanLocked = false;
+var activeDailyPlanDate = '';
+
+function localDateKey() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function emptyDailyPlan() {
+  return { generalAsset: '', generalBullish: ['', '', '', '', ''], generalBearish: ['', '', '', '', ''], generalConclusion: '', timeframeAsset: '', timeframeBullish: ['', '', '', '', ''], timeframeBearish: ['', '', '', '', ''], timeframeConclusion: '', resistance: '', support: '', bullScenario: '', bullRating: '', bullMindset: '', bearScenario: '', bearRating: '', bearMindset: '' };
+}
+
+function readDailyPlanForm() {
+  var plan = emptyDailyPlan();
+  document.querySelectorAll('.daily-plan-input[data-plan-field]').forEach(function(el) { plan[el.getAttribute('data-plan-field')] = el.value; });
+  document.querySelectorAll('.daily-plan-input[data-plan-list]').forEach(function(el) {
+    var key = el.getAttribute('data-plan-list');
+    plan[key][parseInt(el.getAttribute('data-plan-index'), 10)] = el.value;
+  });
+  return plan;
+}
+
+function updateDailyPlanSelectColors() {
+  document.querySelectorAll('.daily-plan-select').forEach(function(el) {
+    el.classList.remove('rating-five', 'rating-six', 'rating-high', 'mindset-cautious', 'mindset-expect');
+    if (el.id.indexOf('Rating') >= 0) {
+      if (el.value === '5') el.classList.add('rating-five');
+      else if (el.value === '6') el.classList.add('rating-six');
+      else if (['7', '8', '9'].indexOf(el.value) >= 0) el.classList.add('rating-high');
+    } else if (el.value === 'Cẩn trọng') el.classList.add('mindset-cautious');
+    else if (el.value === 'Kỳ vọng') el.classList.add('mindset-expect');
+  });
+}
+
+function setDailyPlanLocked(locked) {
+  dailyPlanLocked = locked;
+  document.querySelectorAll('.daily-plan-input').forEach(function(el) { el.disabled = locked; });
+  document.getElementById('dailyPlanSaveBtn').disabled = locked;
+  document.getElementById('dailyPlanEditBtn').disabled = !locked;
+}
+
+function saveDailyPlan() {
+  if (dailyPlanLocked || !activeDailyPlanDate) return;
+  if (!data.dailyPlans) data.dailyPlans = {};
+  data.dailyPlans[activeDailyPlanDate] = readDailyPlanForm();
+  save();
+  dailyPlanDirty = false;
+  setDailyPlanLocked(true);
+}
+
+function editDailyPlan() {
+  if (!dailyPlanLocked) return;
+  dailyPlanDirty = false;
+  setDailyPlanLocked(false);
+}
+
+function resetDailyPlan() {
+  if (!activeDailyPlanDate) return;
+  showConfirm('Reset the plan for ' + activeDailyPlanDate + '?', function(yes) {
+    if (!yes) return;
+    if (!data.dailyPlans) data.dailyPlans = {};
+    delete data.dailyPlans[activeDailyPlanDate];
+    dailyPlanDirty = false;
+    save();
+    renderDailyPlan();
+  });
+}
+
+function renderDailyPlan() {
+  var dateInput = document.getElementById('dailyPlanDate');
+  if (!dateInput) return;
+  if (!dateInput.value) dateInput.value = localDateKey();
+  activeDailyPlanDate = dateInput.value;
+  if (!data.dailyPlans) data.dailyPlans = {};
+  var storedPlan = data.dailyPlans[activeDailyPlanDate];
+  var plan = storedPlan || emptyDailyPlan();
+  document.querySelectorAll('.daily-plan-input[data-plan-field]').forEach(function(el) { el.value = plan[el.getAttribute('data-plan-field')] || ''; });
+  document.querySelectorAll('.daily-plan-input[data-plan-list]').forEach(function(el) {
+    var key = el.getAttribute('data-plan-list');
+    var i = parseInt(el.getAttribute('data-plan-index'), 10);
+    el.value = plan[key] && plan[key][i] ? plan[key][i] : '';
+  });
+  dailyPlanDirty = false;
+  updateDailyPlanSelectColors();
+  setDailyPlanLocked(!!storedPlan);
+}
+
+function syncDailyPlanTextareaPair(firstId, secondId) {
+  if (!window.ResizeObserver) return;
+  var first = document.getElementById(firstId);
+  var second = document.getElementById(secondId);
+  if (!first || !second) return;
+  var busy = false;
+  var observer = new ResizeObserver(function(entries) {
+    if (busy || !entries.length) return;
+    var source = entries[entries.length - 1].target;
+    var target = source === first ? second : first;
+    var height = source.getBoundingClientRect().height;
+    if (Math.abs(target.getBoundingClientRect().height - height) < 1) return;
+    busy = true;
+    target.style.height = height + 'px';
+    requestAnimationFrame(function() { busy = false; });
+  });
+  observer.observe(first);
+  observer.observe(second);
+  var initialHeight = Math.max(first.getBoundingClientRect().height, second.getBoundingClientRect().height);
+  first.style.height = initialHeight + 'px';
+  second.style.height = initialHeight + 'px';
+}
+
+function initDailyPlan() {
+  if (!data.dailyPlans) data.dailyPlans = {};
+  var dateInput = document.getElementById('dailyPlanDate');
+  dateInput.value = localDateKey();
+  activeDailyPlanDate = dateInput.value;
+  dateInput.addEventListener('change', function() {
+    if (dailyPlanDirty && confirm('Save changes to this day before switching dates?')) saveDailyPlan();
+    renderDailyPlan();
+  });
+  document.querySelectorAll('.daily-plan-input').forEach(function(el) {
+    var markDirty = function() { if (!dailyPlanLocked) dailyPlanDirty = true; };
+    el.addEventListener('input', markDirty);
+    el.addEventListener('change', markDirty);
+  });
+  document.querySelectorAll('.daily-plan-select').forEach(function(el) {
+    el.addEventListener('change', updateDailyPlanSelectColors);
+  });
+  syncDailyPlanTextareaPair('planGeneralConclusion', 'planTimeframeConclusion');
+  syncDailyPlanTextareaPair('planBullScenario', 'planBearScenario');
+  renderDailyPlan();
+}
+
 function renderRoutine() {
   var el = document.getElementById('routineWrap');
+  if (!el) return;
   var items = data.dailyRoutine || [];
   routineChecked = items.map(function() { return false; });
   var half = Math.ceil(items.length / 2);
@@ -2331,8 +2838,10 @@ function editTrade(id) {
   document.getElementById('tradeSetup').value = t.setup || '';
   document.getElementById('tradeEntry').value = t.entry || '';
   document.getElementById('tradeR').value = t.rMultiple;
-  document.getElementById('tradeEmotion').value = t.emotion || '';
-  document.getElementById('tradeMistake').value = t.mistake || '';
+  document.getElementById('tradeEntryReason').value = t.entryReason || '';
+  document.getElementById('tradeExitReason').value = t.exitReason || '';
+  document.getElementById('tradeLesson').value = t.lesson || '';
+  document.getElementById('tradeChartLink').value = t.chartLink || '';
   setBias(t.bias);
   setResult(t.result);
 
@@ -2347,22 +2856,45 @@ function editTrade(id) {
   document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
 }
 
+function csvEscape(value) {
+  var text = value === undefined || value === null ? '' : String(value);
+  return '"' + text.replace(/"/g, '""') + '"';
+}
+
 function exportCSV() {
   if (data.trades.length === 0) { showToast('No trades to export', 'error'); return; }
-  var csv = 'ID,Date,Time,Pair,Setup,Entry,Bias,Result,R Multiple,PnL,Emotion,Mistake,Checklist\n';
+  var rows = [['ID','Date','Time','Pair','Setup','Entry','Bias','Result','R Multiple','PnL','Lý do vào lệnh','Lý do chốt lệnh','Rút kinh nghiệm','Chart Link','Checklist']];
   data.trades.forEach(function(t) {
-    var pnl = calcPnl(t);
-    csv += t.id + ',' + t.date + ',' + (t.time || '') + ',' + (t.pair || '') + ',"' + (t.setup || '') + '",' + (t.entry || '') + ',' + (t.bias || '') + ',' + t.result + ',' + t.rMultiple + ',' + Math.round(pnl) + ',"' + (t.emotion || '') + '","' + (t.mistake || '') + '",' + (t.checklist ? 'Yes' : 'No') + '\n';
+    rows.push([t.id, t.date, t.time || '', t.pair || '', t.setup || '', t.entry || '', t.bias || '', t.result || '', t.rMultiple, Math.round(calcPnl(t)), t.entryReason || '', t.exitReason || '', t.lesson || '', t.chartLink || '', t.checklist ? 'Yes' : 'No']);
   });
-  var blob = new Blob([csv], { type: 'text/csv' });
+  var csv = rows.map(function(row) { return row.map(csvEscape).join(','); }).join('\r\n');
+  var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'trading_journal_' + new Date().toISOString().split('T')[0] + '.csv';
   a.click();
+  URL.revokeObjectURL(a.href);
   showToast('CSV exported', 'success');
 }
 
 function importCSV() { document.getElementById('csvFileInput').click(); }
+
+function parseCSV(text) {
+  var rows = [], row = [], value = '', quoted = false;
+  for (var i = 0; i < text.length; i++) {
+    var ch = text[i];
+    if (quoted) {
+      if (ch === '"' && text[i + 1] === '"') { value += '"'; i++; }
+      else if (ch === '"') quoted = false;
+      else value += ch;
+    } else if (ch === '"') quoted = true;
+    else if (ch === ',') { row.push(value); value = ''; }
+    else if (ch === '\n') { row.push(value.replace(/\r$/, '')); rows.push(row); row = []; value = ''; }
+    else value += ch;
+  }
+  if (value.length || row.length) { row.push(value.replace(/\r$/, '')); rows.push(row); }
+  return rows;
+}
 
 document.getElementById('csvFileInput').addEventListener('change', function(e) {
   var file = e.target.files[0];
@@ -2370,19 +2902,39 @@ document.getElementById('csvFileInput').addEventListener('change', function(e) {
   var reader = new FileReader();
   reader.onload = function(ev) {
     try {
-      var lines = ev.target.result.split('\n').filter(function(l) { return l.trim(); });
+      var rows = parseCSV(ev.target.result.replace(/^\uFEFF/, ''));
+      if (rows.length < 2) { showToast('No trades found in CSV', 'error'); return; }
+      var headers = rows[0].map(function(h) { return h.trim().toLowerCase(); });
+      var col = function(name) { return headers.indexOf(name.toLowerCase()); };
       var count = 0;
-      for (var i = 1; i < lines.length; i++) {
-        var cols = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-        if (!cols || cols.length < 9) continue;
-        var c = cols.map(function(x) { return x.replace(/^"|"$/g, '').trim(); });
-        var maxId = data.trades.reduce(function(m, t) { return Math.max(m, t.id); }, 0);
-        data.trades.push({
-          id: maxId + 1, date: c[1], time: c[2] || '', pair: c[3] || '',
-          setup: c[4], entry: c[5] || '', bias: c[6], result: c[7],
-          rMultiple: parseFloat(c[8]), emotion: c[10] || '', mistake: c[11] || ''
-        });
-        if (c[4] && data.setups.indexOf(c[4]) < 0) data.setups.push(c[4]);
+      for (var i = 1; i < rows.length; i++) {
+        var c = rows[i];
+        if (!c.length || !c.some(function(v) { return v.trim(); })) continue;
+        var maxId = data.trades.reduce(function(m, t) { return Math.max(m, Number(t.id) || 0); }, 0);
+        var trade = {
+          id: maxId + 1,
+          date: c[col('Date')] || '',
+          time: c[col('Time')] || '',
+          pair: c[col('Pair')] || '',
+          setup: c[col('Setup')] || '',
+          entry: c[col('Entry')] || '',
+          bias: c[col('Bias')] || '',
+          result: c[col('Result')] || '',
+          rMultiple: parseFloat(c[col('R Multiple')]),
+          entryReason: c[col('Lý do vào lệnh')] || '',
+          exitReason: c[col('Lý do chốt lệnh')] || '',
+          lesson: c[col('Rút kinh nghiệm')] || '',
+          chartLink: c[col('Chart Link')] || '',
+          checklist: (c[col('Checklist')] || '').toLowerCase() === 'yes'
+        };
+        if (col('Entry Reason') >= 0) trade.entryReason = c[col('Entry Reason')] || '';
+        if (col('Exit Reason') >= 0) trade.exitReason = c[col('Exit Reason')] || '';
+        if (col('Lessons Learned') >= 0) trade.lesson = c[col('Lessons Learned')] || '';
+        if (col('Emotion') >= 0) trade.emotion = c[col('Emotion')] || '';
+        if (col('Mistake') >= 0) trade.mistake = c[col('Mistake')] || '';
+        if (!trade.date || isNaN(trade.rMultiple)) continue;
+        data.trades.push(trade);
+        if (trade.setup && data.setups.indexOf(trade.setup) < 0) data.setups.push(trade.setup);
         count++;
       }
       save(); refreshAll();
@@ -2392,13 +2944,13 @@ document.getElementById('csvFileInput').addEventListener('change', function(e) {
   reader.readAsText(file);
   e.target.value = '';
 });
-
 function resetAll() {
   showConfirm('Delete ALL data?', function(yes) {
     if (!yes) return;
     showConfirm('REALLY sure? Everything will be gone.', function(yes2) {
       if (!yes2) return;
       localStorage.removeItem('tradingJournal');
+      dailyPlanDirty = false;
       data = { initialCapital: 0, riskPercent: 0, profitGoalPct: 0, maxLossPct: 0, checklistMode: 'strict', setupChecklists: { 'default': [
         { text: 'Market trend identified' },
         { text: 'Valid setup (OB / FVG / liquidity)' },
@@ -2413,8 +2965,11 @@ function resetAll() {
         { text: 'Mark trade setups on chart' },
         { text: 'Set alerts for entry zones' },
         { text: 'Review open positions' }
-      ], trades: [], setups: [], quotes: ['"Discipline is the bridge between goals and achievement."'], currentQuoteIdx: 0, portfolio: [] };
+      ], dailyPlans: {}, investorGalleryCustom: [], investorGalleryEdits: {}, trades: [], setups: [], quotes: ['"Discipline is the bridge between goals and achievement."'], currentQuoteIdx: 0, portfolio: [] };
       resetForm();
+      loadCustomInvestorItems();
+      renderInvestorGallery(0, true);
+      renderDailyPlan();
       refreshAll();
       showToast('All data reset', 'info');
     });
@@ -2663,381 +3218,6 @@ function updateReport() {
   document.getElementById('rpInsights').innerHTML = insH;
 }
 
-var pfCurrentTab = 'journal';
-var pfPrices = {};
-var pfPriceTimer = null;
-var pfEditingId = null;
-var pfEditingMode = null;
-
-function switchTab(tab) {
-  pfCurrentTab = tab;
-  document.getElementById('journalTab').style.display = tab === 'journal' ? '' : 'none';
-  document.getElementById('portfolioTab').style.display = tab === 'portfolio' ? '' : 'none';
-  var btns = document.querySelectorAll('.tab-btn');
-  btns.forEach(function(b) { b.classList.remove('active'); });
-  if (tab === 'journal') btns[0].classList.add('active');
-  else { btns[1].classList.add('active'); pfRefresh(); pfFetchPrices(); }
-  if (pfPriceTimer) clearInterval(pfPriceTimer);
-  if (tab === 'portfolio') pfPriceTimer = setInterval(pfFetchPrices, 60000);
-}
-
-function pfRefresh() {
-  pfRenderSummary();
-  pfRenderTable();
-  pfDrawPie();
-}
-
-function pfRenderSummary() {
-  var totalInvested = 0, totalValue = 0;
-  data.portfolio.forEach(function(p) {
-    totalInvested += p.qty * p.avgBuyPrice;
-    totalValue += p.qty * (pfPrices[p.coinId] || p.avgBuyPrice);
-  });
-  var pnl = totalValue - totalInvested;
-  var pnlPct = totalInvested > 0 ? (pnl / totalInvested * 100) : 0;
-  var grid = document.getElementById('pfSummaryGrid');
-  grid.innerHTML =
-    '<div class="stat-card"><div class="stat-label">Total Invested</div><div class="stat-value gold">' + pfFmtMoney(totalInvested) + '</div></div>' +
-    '<div class="stat-card"><div class="stat-label">Current Value</div><div class="stat-value">' + pfFmtMoney(totalValue) + '</div></div>' +
-    '<div class="stat-card"><div class="stat-label">Total PnL</div><div class="stat-value ' + (pnl >= 0 ? 'green' : 'red') + '">' + pfFmtMoney(pnl) + '</div></div>' +
-    '<div class="stat-card"><div class="stat-label">PnL %</div><div class="stat-value ' + (pnlPct >= 0 ? 'green' : 'red') + '">' + pnlPct.toFixed(2) + '%</div></div>';
-}
-
-function pfFmtMoney(v) {
-  if (Math.abs(v) >= 1) return '$' + v.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-  return '$' + v.toFixed(6);
-}
-
-function pfFmtPrice(v) {
-  if (v >= 1) return '$' + v.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-  return '$' + v.toFixed(6);
-}
-
-function pfRenderTable() {
-  var tbody = document.getElementById('pfBody');
-  if (data.portfolio.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:20px">No positions yet</td></tr>'; return; }
-  var html = '';
-  data.portfolio.forEach(function(p) {
-    var curPrice = pfPrices[p.coinId] || p.avgBuyPrice;
-    var value = p.qty * curPrice;
-    var pnl = value - (p.qty * p.avgBuyPrice);
-    var pnlPct = p.avgBuyPrice > 0 ? ((curPrice - p.avgBuyPrice) / p.avgBuyPrice * 100) : 0;
-    var pnlClass = pnl > 0 ? 'pnl-pos' : pnl < 0 ? 'pnl-neg' : 'pnl-zero';
-    var isEditing = pfEditingId === p.id;
-    var dcaCount = p.entries ? p.entries.length : 0;
-    html += '<tr id="pfRow_' + p.id + '">';
-    html += '<td><div style="display:flex;align-items:center;gap:6px">' + (p.thumb ? '<img src="' + pfEsc(p.thumb) + '" style="width:20px;height:20px;border-radius:50%" onerror="this.style.display=\'none\'">' : '<div style="width:20px;height:20px;border-radius:50%;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--gold)">' + pfEsc((p.symbol || p.coinId).substring(0,2).toUpperCase()) + '</div>') + '<span class="pf-coin-name">' + pfEsc(p.symbol || p.coinId.toUpperCase()) + '</span></div></td>';
-    html += '<td>' + p.qty.toLocaleString('en-US', {maximumFractionDigits:8}) + '</td>';
-    html += '<td>' + pfFmtPrice(p.avgBuyPrice) + '</td>';
-    html += '<td>' + (pfPrices[p.coinId] ? pfFmtPrice(pfPrices[p.coinId]) : '<span class="pf-price-loading">...</span>') + '</td>';
-    html += '<td>' + pfFmtMoney(value) + '</td>';
-    html += '<td class="' + pnlClass + '">' + pfFmtMoney(pnl) + '</td>';
-    html += '<td class="' + pnlClass + '">' + pnlPct.toFixed(2) + '%</td>';
-    html += '<td>';
-    if (!isEditing) {
-      html += '<button class="edit-btn" onclick="pfStartDca(\'' + p.id + '\')">DCA</button>';
-      html += '<button class="edit-btn" onclick="pfStartEdit(\'' + p.id + '\')">Edit</button>';
-      html += '<button class="del-btn" onclick="pfDelete(\'' + p.id + '\')">Del</button>';
-    }
-    html += '</td>';
-    html += '</tr>';
-    if (isEditing) {
-      html += '<tr><td colspan="8">';
-      if (pfEditingMode === 'dca') {
-        html += '<div class="pf-dca-form">';
-        html += '<input type="number" id="pfDcaQty" placeholder="Qty" step="any" min="0">';
-        html += '<input type="number" id="pfDcaPrice" placeholder="Buy price" step="any" min="0">';
-        html += '<input type="date" id="pfDcaDate">';
-        html += '<button onclick="pfSaveDca(\'' + p.id + '\')">Add</button>';
-        html += '<button class="pf-dca-cancel" onclick="pfCancelEdit()">Cancel</button>';
-        html += '</div>';
-      } else {
-        html += '<div class="pf-edit-row">';
-        html += '<input type="number" id="pfEditQty" placeholder="Qty" step="any" value="' + p.qty + '">';
-        html += '<input type="number" id="pfEditPrice" placeholder="Avg price" step="any" value="' + p.avgBuyPrice + '">';
-        html += '<button onclick="pfSaveEdit(\'' + p.id + '\')">Save</button>';
-        html += '<button class="pf-edit-cancel" onclick="pfCancelEdit()">Cancel</button>';
-        html += '</div>';
-      }
-      html += '</td></tr>';
-    }
-    if (dcaCount > 1) {
-      html += '<tr><td colspan="8" style="padding:0"><details style="margin:0"><summary style="font-size:12px;color:var(--text-dim);cursor:pointer;padding:2px 4px">' + dcaCount + ' entries</summary>';
-      html += '<table class="pf-tbl" style="font-size:12px;margin:4px 0"><thead><tr><th>Date</th><th>Qty</th><th>Price</th></tr></thead><tbody>';
-      p.entries.forEach(function(e) {
-        html += '<tr><td>' + (e.date || '-') + '</td><td>' + e.qty + '</td><td>' + pfFmtPrice(e.price) + '</td></tr>';
-      });
-      html += '</tbody></table></details></td></tr>';
-    }
-  });
-  tbody.innerHTML = html;
-}
-
-function pfStartDca(id) {
-  pfEditingId = id;
-  pfEditingMode = 'dca';
-  pfRenderTable();
-  var d = new Date();
-  var dateInput = document.getElementById('pfDcaDate');
-  if (dateInput) dateInput.value = d.toISOString().split('T')[0];
-}
-
-function pfStartEdit(id) {
-  pfEditingId = id;
-  pfEditingMode = 'edit';
-  pfRenderTable();
-}
-
-function pfCancelEdit() {
-  pfEditingId = null;
-  pfEditingMode = null;
-  pfRenderTable();
-}
-
-function pfSaveDca(id) {
-  var qtyVal = parseFloat(document.getElementById('pfDcaQty').value);
-  var priceVal = parseFloat(document.getElementById('pfDcaPrice').value);
-  var dateVal = document.getElementById('pfDcaDate').value;
-  if (!qtyVal || qtyVal <= 0) { showToast('Enter valid quantity', 'error'); return; }
-  if (!priceVal || priceVal <= 0) { showToast('Enter valid price', 'error'); return; }
-  var pos = data.portfolio.find(function(p) { return p.id === id; });
-  if (!pos) return;
-  if (!pos.entries) pos.entries = [{ date: pos.buyDate, qty: pos.qty, price: pos.avgBuyPrice }];
-  pos.entries.push({ date: dateVal || new Date().toISOString().split('T')[0], qty: qtyVal, price: priceVal });
-  var totalQty = 0, totalCost = 0;
-  pos.entries.forEach(function(e) { totalQty += e.qty; totalCost += e.qty * e.price; });
-  pos.qty = totalQty;
-  pos.avgBuyPrice = totalCost / totalQty;
-  pfEditingId = null;
-  pfEditingMode = null;
-  save();
-  pfRefresh();
-  showToast('DCA added', 'success');
-}
-
-function pfSaveEdit(id) {
-  var qtyVal = parseFloat(document.getElementById('pfEditQty').value);
-  var priceVal = parseFloat(document.getElementById('pfEditPrice').value);
-  if (!qtyVal || qtyVal <= 0) { showToast('Enter valid quantity', 'error'); return; }
-  if (!priceVal || priceVal <= 0) { showToast('Enter valid price', 'error'); return; }
-  var pos = data.portfolio.find(function(p) { return p.id === id; });
-  if (!pos) return;
-  pos.qty = qtyVal;
-  pos.avgBuyPrice = priceVal;
-  if (pos.entries && pos.entries.length === 1) { pos.entries[0].qty = qtyVal; pos.entries[0].price = priceVal; }
-  pfEditingId = null;
-  pfEditingMode = null;
-  save();
-  pfRefresh();
-  showToast('Position updated', 'success');
-}
-
-function pfDelete(id) {
-  showConfirm('Delete this position?', function(yes) {
-    if (!yes) return;
-    data.portfolio = data.portfolio.filter(function(p) { return p.id !== id; });
-    save();
-    pfRefresh();
-    showToast('Position deleted', 'info');
-  });
-}
-
-function pfSavePosition() {
-  var coinName = document.getElementById('pfCoinInput').value.trim();
-  var qtyVal = parseFloat(document.getElementById('pfQtyInput').value.replace(/,/g, ''));
-  var priceVal = parseFloat(document.getElementById('pfPriceInput').value);
-  var dateVal = document.getElementById('pfDateInput').value;
-  if (!coinName) { showToast('Enter coin name', 'error'); return; }
-  if (!qtyVal || qtyVal <= 0) { showToast('Enter valid quantity', 'error'); return; }
-  if (!priceVal || priceVal <= 0) { showToast('Enter valid price', 'error'); return; }
-  var coinId = pfSelectedCoinId || coinName.toLowerCase().replace(/\s+/g, '-');
-  var symbol = pfSelectedSymbol || coinName.substring(0, 3).toUpperCase();
-  var thumb = pfSelectedThumb || '';
-  var existing = data.portfolio.find(function(p) { return p.coinId === coinId; });
-  if (existing) {
-    if (!existing.entries) existing.entries = [{ date: existing.buyDate, qty: existing.qty, price: existing.avgBuyPrice }];
-    existing.entries.push({ date: dateVal || new Date().toISOString().split('T')[0], qty: qtyVal, price: priceVal });
-    var totalQty = 0, totalCost = 0;
-    existing.entries.forEach(function(e) { totalQty += e.qty; totalCost += e.qty * e.price; });
-    existing.qty = totalQty;
-    existing.avgBuyPrice = totalCost / totalQty;
-    showToast('DCA added to ' + existing.symbol, 'success');
-  } else {
-    data.portfolio.push({
-      id: 'pf_' + Date.now(),
-      coin: coinName,
-      coinId: coinId,
-      symbol: symbol,
-      thumb: thumb,
-      qty: qtyVal,
-      avgBuyPrice: priceVal,
-      buyDate: dateVal || new Date().toISOString().split('T')[0],
-      entries: [{ date: dateVal || new Date().toISOString().split('T')[0], qty: qtyVal, price: priceVal }]
-    });
-    showToast('Position added', 'success');
-  }
-  pfSelectedCoinId = null;
-  pfSelectedSymbol = '';
-  pfSelectedThumb = '';
-  document.getElementById('pfCoinInput').value = '';
-  document.getElementById('pfQtyInput').value = '';
-  document.getElementById('pfPriceInput').value = '';
-  document.getElementById('pfCoinSuggest').style.display = 'none';
-  save();
-  pfRefresh();
-  pfFetchPrices();
-}
-
-var pfSelectedCoinId = null;
-var pfSelectedSymbol = '';
-var pfSelectedThumb = '';
-var pfCoinSearchTimer = null;
-
-function pfSearchCoins(query) {
-  if (pfCoinSearchTimer) clearTimeout(pfCoinSearchTimer);
-  if (!query || query.length < 2) { document.getElementById('pfCoinSuggest').style.display = 'none'; return; }
-  pfCoinSearchTimer = setTimeout(function() {
-    fetch('https://api.coingecko.com/api/v3/search?query=' + encodeURIComponent(query))
-      .then(function(r) { return r.json(); })
-      .then(function(result) {
-        var coins = (result.coins || []).slice(0, 10);
-        var sug = document.getElementById('pfCoinSuggest');
-        if (coins.length === 0) { sug.style.display = 'none'; return; }
-        var html = '';
-        coins.forEach(function(c) {
-          var sym = pfEsc(c.symbol ? c.symbol.toUpperCase() : '');
-          var nm = pfEsc(c.name);
-          var cid = pfEsc(c.id);
-          var thumbUrl = pfEsc(c.thumb || c.large || '');
-          html += '<div class="pf-coin-item" data-id="' + cid + '" data-name="' + nm + '" data-sym="' + sym + '" data-thumb="' + thumbUrl + '">';
-          if (c.thumb) html += '<img src="' + thumbUrl + '" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:6px" onerror="this.style.display=\'none\'">';
-          html += sym + '<span class="pf-coin-sym">' + nm + '</span>';
-          html += '</div>';
-        });
-        sug.innerHTML = html;
-        sug.style.display = '';
-        sug.querySelectorAll('.pf-coin-item').forEach(function(el) {
-          el.onclick = function() {
-            pfSelectCoin(el.getAttribute('data-id'), el.getAttribute('data-name'), el.getAttribute('data-sym'), el.getAttribute('data-thumb'));
-          };
-        });
-      })
-      .catch(function() { document.getElementById('pfCoinSuggest').style.display = 'none'; });
-  }, 400);
-}
-
-function pfSelectCoin(id, name, symbol, thumb) {
-  pfSelectedCoinId = id;
-  pfSelectedSymbol = symbol || name.substring(0, 3).toUpperCase();
-  pfSelectedThumb = thumb || '';
-  document.getElementById('pfCoinInput').value = (symbol || name.substring(0, 3).toUpperCase()) + ' - ' + name;
-  document.getElementById('pfCoinSuggest').style.display = 'none';
-}
-
-function pfFetchPrices() {
-  if (data.portfolio.length === 0) return;
-  var ids = data.portfolio.map(function(p) { return p.coinId; }).join(',');
-  fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=' + encodeURIComponent(ids) + '&sparkline=false')
-    .then(function(r) { return r.json(); })
-    .then(function(coins) {
-      coins.forEach(function(c) {
-        if (c.current_price) pfPrices[c.id] = c.current_price;
-        var pos = data.portfolio.find(function(p) { return p.coinId === c.id; });
-        if (pos) {
-          if (c.image && !pos.thumb) pos.thumb = c.image;
-          if (c.symbol && (!pos.symbol || pos.symbol === pos.coinId.substring(0, 5).toUpperCase())) pos.symbol = c.symbol.toUpperCase();
-        }
-      });
-      pfRefresh();
-    })
-    .catch(function() { pfRefresh(); });
-}
-
-function pfDrawPie() {
-  var canvas = document.getElementById('pfPieCanvas');
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var dpr = window.devicePixelRatio || 1;
-  var w = canvas.clientWidth;
-  var h = canvas.clientHeight;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, w, h);
-  if (data.portfolio.length === 0) {
-    ctx.fillStyle = isLight() ? '#eee' : '#1a1a1a';
-    ctx.font = '14px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('No positions', w / 2, h / 2);
-    document.getElementById('pfLegend').innerHTML = '';
-    return;
-  }
-  var values = data.portfolio.map(function(p) {
-    return { coin: p.coin, coinId: p.coinId, value: p.qty * (pfPrices[p.coinId] || p.avgBuyPrice) };
-  });
-  var total = values.reduce(function(s, v) { return s + v.value; }, 0);
-  if (total === 0) return;
-  var colors = ['#c9a84c','#4caf50','#2196f3','#ef5350','#9c27b0','#ff9800','#00bcd4','#e91e63','#8bc34a','#795548'];
-  var cx = w / 2, cy = h / 2, radius = Math.min(w, h) / 2 - 20;
-  var startAngle = -Math.PI / 2;
-  var legendHtml = '';
-  values.forEach(function(v, i) {
-    var sliceAngle = (v.value / total) * 2 * Math.PI;
-    var color = colors[i % colors.length];
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle);
-    ctx.closePath();
-    ctx.fillStyle = color;
-    ctx.fill();
-    if (sliceAngle > 0.15) {
-      var midAngle = startAngle + sliceAngle / 2;
-      var labelR = radius * 0.65;
-      ctx.fillStyle = isLight() ? '#444' : '#000';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText((v.value / total * 100).toFixed(1) + '%', cx + Math.cos(midAngle) * labelR, cy + Math.sin(midAngle) * labelR);
-    }
-    startAngle += sliceAngle;
-    legendHtml += '<div class="pf-legend-item"><span class="pf-legend-dot" style="background:' + color + '"></span>' + pfEsc(v.coin) + ' (' + pfFmtMoney(v.value) + ')</div>';
-  });
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius * 0.35, 0, 2 * Math.PI);
-  ctx.fillStyle = isLight() ? '#fff' : '#0d0d0d';
-  ctx.fill();
-  ctx.fillStyle = isLight() ? '#1a1a1a' : '#e0e0e0';
-  ctx.font = 'bold 14px Arial';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(pfFmtMoney(total), cx, cy - 6);
-  ctx.font = '11px Arial';
-  ctx.fillStyle = isLight() ? '#888' : '#555';
-  document.getElementById('pfLegend').innerHTML = legendHtml;
-}
-
-function pfEsc(s) {
-  if (!s) return '';
-  var d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
-
-document.getElementById('pfCoinInput').addEventListener('input', function() { pfSearchCoins(this.value.trim()); });
-document.getElementById('pfCoinInput').addEventListener('blur', function() { setTimeout(function() { document.getElementById('pfCoinSuggest').style.display = 'none'; }, 200); });
-document.getElementById('pfDateInput').value = new Date().toISOString().split('T')[0];
-
-document.getElementById('pfQtyInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') this.blur(); });
-document.getElementById('pfQtyInput').addEventListener('blur', function() {
-  var raw = this.value.replace(/,/g, '');
-  var val = parseFloat(raw);
-  if (val > 0 || raw !== '') { this.value = val.toLocaleString('en-US', {maximumFractionDigits: 8}); }
-});
-document.getElementById('pfQtyInput').addEventListener('focus', function() {
-  var raw = this.value.replace(/,/g, '');
-  var val = parseFloat(raw);
-  if (val > 0) { this.value = val; this.select(); }
-});
-
 function populateTimeSelects() {
   var hSel = document.getElementById('tradeHour');
   var mSel = document.getElementById('tradeMinute');
@@ -3086,6 +3266,8 @@ function tc(v) { return getComputedStyle(document.documentElement).getPropertyVa
 function isLight() { return currentTheme === 'light'; }
 
 load();
+try { initInvestorGallery(); } catch(e) {}
+try { initDailyPlan(); } catch(e) {}
 try { document.getElementById('tradeDate').value = new Date().toISOString().split('T')[0]; } catch(e) {}
 try { populateTimeSelects(); } catch(e) {}
 try { setTimeNow(); } catch(e) {}
@@ -3096,6 +3278,7 @@ refreshAll();
 
 fbLoad(function(remoteData) {
   if (remoteData) {
+    var cachedQuotes = Array.isArray(data.quotes) ? data.quotes.slice() : [];
     data = remoteData;
     if (!data.trades) data.trades = [];
     if (!data.initialCapital) data.initialCapital = 0;
@@ -3106,12 +3289,18 @@ fbLoad(function(remoteData) {
     if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
     if (data.checklistMode === undefined) data.checklistMode = 'strict';
     if (!data.dailyRoutine) data.dailyRoutine = [];
+    if (!data.dailyPlans) data.dailyPlans = {};
+    if (!Array.isArray(data.investorGalleryCustom)) data.investorGalleryCustom = [];
     if (!data.setups) data.setups = [];
-    if (!data.quotes) data.quotes = [];
+    if (!Array.isArray(data.quotes) || !data.quotes.length) data.quotes = cachedQuotes.length ? cachedQuotes : ['"Discipline is the bridge between goals and achievement."'];
     if (data.currentQuoteIdx === undefined) data.currentQuoteIdx = 0;
     if (!data.portfolio) data.portfolio = [];
     try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
     fbSyncing = true;
+    loadCustomInvestorItems();
+    renderInvestorGallery(0, false);
+    startInvestorRotation();
+    renderDailyPlan();
     refreshAll();
     fbSyncing = false;
   } else {
