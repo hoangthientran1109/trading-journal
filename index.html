@@ -6,6 +6,7 @@
 <title>Trading Journal</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#000;--card:#0d0d0d;--card2:#141414;--border:#1a1a1a;--border2:#252525;--gold:#c9a84c;--gold-dim:rgba(201,168,76,.15);--text:#e0e0e0;--text-dim:#555;--green:#4caf50;--red:#ef5350;--yellow:#ffc107;--radius:6px;--font:Arial,sans-serif;--scrollbar-thumb:#2a2a2a;--pnl-pos-bg:rgba(76,175,80,.1);--pnl-neg-bg:rgba(239,83,80,.1);--pnl-be-bg:rgba(255,193,7,.06);--row-even:rgba(255,255,255,.012);--row-border:rgba(255,255,255,.025);--shadow:rgba(0,0,0,.5)}
@@ -431,6 +432,7 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 .investor-custom-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
 .investor-custom-row .investor-row-actions{display:flex;gap:5px;flex-shrink:0}.investor-custom-row button{background:none;border:1px solid var(--border2);border-radius:4px;color:var(--text-dim);padding:3px 8px;cursor:pointer}.investor-custom-row button:hover{border-color:var(--gold);color:var(--gold)}.investor-custom-row button[data-delete-investor]{color:var(--red)}
 @media(max-width:650px){.investor-modal-grid{grid-template-columns:1fr}}
+.auth-gate[hidden]{display:none!important}.auth-gate{position:fixed;inset:0;z-index:30000;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px}.auth-gate-card{width:min(420px,94vw);background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:28px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.6)}.auth-gate-card h2{color:var(--gold);font-size:22px;margin-bottom:8px}.auth-gate-card p{color:var(--text-dim);font-size:14px;margin-bottom:18px}.auth-google-button{width:100%;padding:11px 14px;border:0;border-radius:5px;background:var(--gold);color:#111;font-weight:700;font-family:var(--font);cursor:pointer}.auth-gate-status{margin-top:12px;color:var(--text-dim);font-size:12px;min-height:18px}.auth-identity{display:flex;align-items:center;gap:8px;color:var(--text-dim);font-size:11px}.auth-identity[hidden]{display:none!important}.auth-identity button{background:var(--card2);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;color:var(--text-dim);font-size:11px;cursor:pointer}.auth-identity button:hover{color:var(--gold);border-color:var(--gold)}
 
 @media(min-width:1900px){.investor-rail{display:block}}
 @media(max-width:1899px){.gallery-toolbar-button{display:inline-flex}}
@@ -485,6 +487,10 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 </head>
 <body>
 
+<div id="authGate" class="auth-gate"><div class="auth-gate-card"><h2>Trading Journal</h2><p>Sign in with Google to keep your journal private and sync it across your devices.</p><button class="auth-google-button" type="button" onclick="signInWithGoogle()">Continue with Google</button><div id="authGateStatus" class="auth-gate-status">Checking secure session…</div></div></div>
+
+
+
 <aside class="investor-rail investor-portrait-rail" id="investorPortraitRail" aria-label="Investor portrait">
   <div class="investor-kicker">Investor spotlight</div>
   <div class="investor-photo-frame"><div class="investor-monogram" id="investorMonogram"></div><img class="investor-photo" id="investorPhoto" alt=""></div>
@@ -522,6 +528,7 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
   <div class="tab-bar-left">
     <button class="action-btn gallery-toolbar-button" type="button" onclick="openInvestorManager()">＋ Add investor</button>
   </div>
+  <div class="auth-identity" id="authIdentity" hidden><span id="authUserEmail"></span><button type="button" onclick="signOutGoogle()">Sign out</button></div>
   <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Toggle dark/light mode">&#9790;</button>
 </div>
 
@@ -844,47 +851,98 @@ var firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 var fbDb = firebase.database();
+var fbAuth = firebase.auth();
 var fbSyncing = false;
+var fbCurrentUser = null;
+var fbJournalRef = null;
+var fbJournalListener = null;
 
 function fbSave() {
-  if (fbSyncing) return;
+  if (fbSyncing || !fbCurrentUser || !fbJournalRef) return;
   fbSyncing = true;
-  try { fbDb.ref('journal').set(data); } catch(e) {}
-  setTimeout(function() { fbSyncing = false; }, 2000);
+  fbJournalRef.set(data).catch(function(err) {
+    console.error('Firebase save error:', err);
+    showToast('Cloud save failed. Check your connection.', 'error');
+  }).finally(function() { fbSyncing = false; });
 }
 
 function fbLoad(callback) {
-  fbDb.ref('journal').once('value', function(snap) {
-    var remote = snap.val();
-    if (remote && (remote.trades || remote.setups || remote.dailyRoutine || remote.dailyPlans)) {
-      callback(remote);
-    } else {
-      callback(null);
-    }
-  }, function(err) {
+  if (!fbJournalRef) { callback(null, new Error('No signed-in journal')); return; }
+  fbJournalRef.once('value', function(snap) { callback(snap.val(), null); }, function(err) {
     console.error('Firebase load error:', err);
-    callback(null);
+    callback(null, err);
   });
 }
 
+function applyRemoteJournal(remote) {
+  var cachedQuotes = Array.isArray(data.quotes) ? data.quotes.slice() : [];
+  data = remote;
+  if (!data.trades) data.trades = [];
+  if (!data.portfolio) data.portfolio = [];
+  if (!data.setups) data.setups = [];
+  if (!Array.isArray(data.quotes) || !data.quotes.length) data.quotes = cachedQuotes.length ? cachedQuotes : ['"Discipline is the bridge between goals and achievement."'];
+  if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
+  if (!data.dailyRoutine) data.dailyRoutine = [];
+  if (!data.dailyPlans) data.dailyPlans = {};
+  if (!Array.isArray(data.investorGalleryCustom)) data.investorGalleryCustom = [];
+  if (!data.investorGalleryEdits || typeof data.investorGalleryEdits !== 'object') data.investorGalleryEdits = {};
+  if (!data.quoteAlignments) data.quoteAlignments = [];
+  if (data.currentQuoteIdx === undefined) data.currentQuoteIdx = 0;
+  try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
+  loadCustomInvestorItems();
+  renderInvestorGallery(Math.max(0, Math.min(investorGalleryIndex, investorGalleryItems.length - 1)), false);
+  startInvestorRotation();
+  renderDailyPlan();
+  refreshAll();
+}
+
 function fbListen() {
-  fbDb.ref('journal').on('value', function(snap) {
+  if (!fbJournalRef) return;
+  if (fbJournalListener) fbJournalRef.off('value', fbJournalListener);
+  fbJournalListener = function(snap) {
     if (fbSyncing) return;
     var remote = snap.val();
-    if (remote && (remote.trades || remote.setups || remote.dailyRoutine || remote.dailyPlans)) {
-      var cachedQuotes = Array.isArray(data.quotes) ? data.quotes.slice() : [];
-      data = remote;
-      if (!data.trades) data.trades = [];
-      if (!data.portfolio) data.portfolio = [];
-      if (!data.setups) data.setups = [];
-      if (!Array.isArray(data.quotes) || !data.quotes.length) data.quotes = cachedQuotes.length ? cachedQuotes : ['"Discipline is the bridge between goals and achievement."'];
-      if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
-      if (!data.dailyRoutine) data.dailyRoutine = [];
-      if (!data.dailyPlans) data.dailyPlans = {};
-      if (!Array.isArray(data.investorGalleryCustom)) data.investorGalleryCustom = [];
-      try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
-      try { loadCustomInvestorItems(); renderInvestorGallery(Math.max(0,Math.min(investorGalleryIndex,investorGalleryItems.length - 1)), false); startInvestorRotation(); renderDailyPlan(); refreshAll(); } catch(e) {}
-    }
+    if (remote && (remote.trades || remote.setups || remote.dailyRoutine || remote.dailyPlans || remote.investorGalleryCustom)) applyRemoteJournal(remote);
+  };
+  fbJournalRef.on('value', fbJournalListener, function(err) {
+    console.error('Firebase listen error:', err);
+    showToast('Cloud sync unavailable. Check Firebase rules.', 'error');
+  });
+}
+
+function showAuthGate(show, message) {
+  document.getElementById('authGate').hidden = !show;
+  if (message) document.getElementById('authGateStatus').textContent = message;
+}
+
+function signInWithGoogle() {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  fbAuth.signInWithPopup(provider).catch(function(err) {
+    console.error('Google sign-in error:', err);
+    showAuthGate(true, 'Could not sign in. Check Firebase Authentication setup and try again.');
+  });
+}
+
+function signOutGoogle() { fbAuth.signOut().catch(function(err) { console.error('Sign-out error:', err); }); }
+
+function startPrivateJournal(user) {
+  if (fbCurrentUser && fbCurrentUser.uid === user.uid && fbJournalRef) return;
+  var priorOwnerUid = localStorage.getItem('tradingJournalOwnerUid');
+  if (priorOwnerUid && priorOwnerUid !== user.uid) {
+    data = JSON.parse(JSON.stringify(defaultJournalData));
+  }
+  fbCurrentUser = user;
+  fbJournalRef = fbDb.ref('users/' + user.uid + '/journal');
+  document.getElementById('authUserEmail').textContent = user.email || 'Signed in';
+  document.getElementById('authIdentity').hidden = false;
+  showAuthGate(true, 'Loading your private journal…');
+  fbLoad(function(remoteData, error) {
+    if (error) { showAuthGate(true, 'Sign-in worked, but Firebase database rules still need to be configured.'); return; }
+    if (remoteData) applyRemoteJournal(remoteData);
+    else { save(); renderDailyPlan(); refreshAll(); }
+    try { localStorage.setItem('tradingJournalOwnerUid', user.uid); } catch(e) {}
+    fbListen();
+    showAuthGate(false);
   });
 }
 
@@ -897,6 +955,7 @@ var data = {
   checklistMode: 'strict',
   dailyPlans: {},
   investorGalleryCustom: [],
+  investorGalleryEdits: {},
   dailyRoutine: [
     { text: 'Review market overview & news' },
     { text: 'Check economic calendar' },
@@ -919,6 +978,7 @@ var data = {
   currentQuoteIdx: 0,
   portfolio: []
 };
+var defaultJournalData = JSON.parse(JSON.stringify(data));
 var currentBias = '';
 var currentResult = '';
 var editingId = null;
@@ -3276,37 +3336,18 @@ try { setupMpDrag(); } catch(e) {}
 try { renderChecklist(); } catch(e) {}
 refreshAll();
 
-fbLoad(function(remoteData) {
-  if (remoteData) {
-    var cachedQuotes = Array.isArray(data.quotes) ? data.quotes.slice() : [];
-    data = remoteData;
-    if (!data.trades) data.trades = [];
-    if (!data.initialCapital) data.initialCapital = 0;
-    if (!data.riskPercent) data.riskPercent = 0;
-    if (data.profitGoalPct === undefined) data.profitGoalPct = 0;
-    if (data.maxLossPct === undefined) data.maxLossPct = 0;
-    if (data.dailyLossLimit === undefined) data.dailyLossLimit = 0;
-    if (!data.setupChecklists) data.setupChecklists = { 'default': [] };
-    if (data.checklistMode === undefined) data.checklistMode = 'strict';
-    if (!data.dailyRoutine) data.dailyRoutine = [];
-    if (!data.dailyPlans) data.dailyPlans = {};
-    if (!Array.isArray(data.investorGalleryCustom)) data.investorGalleryCustom = [];
-    if (!data.setups) data.setups = [];
-    if (!Array.isArray(data.quotes) || !data.quotes.length) data.quotes = cachedQuotes.length ? cachedQuotes : ['"Discipline is the bridge between goals and achievement."'];
-    if (data.currentQuoteIdx === undefined) data.currentQuoteIdx = 0;
-    if (!data.portfolio) data.portfolio = [];
-    try { localStorage.setItem('tradingJournal', JSON.stringify(data)); localStorage.setItem('tradingJournalBackup', JSON.stringify(data)); } catch(e) {}
-    fbSyncing = true;
-    loadCustomInvestorItems();
-    renderInvestorGallery(0, false);
-    startInvestorRotation();
-    renderDailyPlan();
-    refreshAll();
-    fbSyncing = false;
+
+fbAuth.onAuthStateChanged(function(user) {
+  if (user) {
+    startPrivateJournal(user);
   } else {
-    fbSave();
+    if (fbJournalRef && fbJournalListener) fbJournalRef.off('value', fbJournalListener);
+    fbCurrentUser = null;
+    fbJournalRef = null;
+    fbJournalListener = null;
+    document.getElementById('authIdentity').hidden = true;
+    showAuthGate(true, 'Sign in to access your private journal.');
   }
-  fbListen();
 });
 </script>
 </body>
