@@ -7,6 +7,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#000;--card:#0d0d0d;--card2:#141414;--border:#1a1a1a;--border2:#252525;--gold:#c9a84c;--gold-dim:rgba(201,168,76,.15);--text:#e0e0e0;--text-dim:#555;--green:#4caf50;--red:#ef5350;--yellow:#ffc107;--radius:6px;--font:Arial,sans-serif;--scrollbar-thumb:#2a2a2a;--pnl-pos-bg:rgba(76,175,80,.1);--pnl-neg-bg:rgba(239,83,80,.1);--pnl-be-bg:rgba(255,193,7,.06);--row-even:rgba(255,255,255,.012);--row-border:rgba(255,255,255,.025);--shadow:rgba(0,0,0,.5)}
@@ -36,6 +37,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16
 .section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
 .section-title{font-size:16px;font-weight:700;color:var(--gold);text-transform:capitalize;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .section-title::before{content:'';display:inline-block;width:3px;height:16px;background:var(--gold);border-radius:2px}
+.section-title{width:100%}
+.section-capture-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border:1px solid var(--border2);border-radius:5px;background:var(--card2);color:var(--gold);font:600 12px var(--font);letter-spacing:0;cursor:pointer;transition:background .15s,border-color .15s}
+.section-capture-btn:hover{background:var(--gold-dim);border-color:var(--gold)}
+.section-capture-btn:disabled{opacity:.6;cursor:wait}
+.capture-modal{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:18px}
+.capture-dialog{width:min(100%,1100px);max-height:92vh;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 50px rgba(0,0,0,.55)}
+.capture-dialog-head{display:flex;align-items:center;gap:8px;color:var(--gold);font-weight:700}
+.capture-dialog-head span{margin-right:auto;overflow-wrap:anywhere}
+.capture-dialog-head button,.capture-download{border:1px solid var(--border2);border-radius:5px;background:var(--card2);color:var(--text);padding:7px 11px;cursor:pointer;font:600 13px var(--font)}
+.capture-download{background:var(--gold);border-color:var(--gold);color:#111}
+.capture-preview{display:block;max-width:100%;max-height:calc(92vh - 100px);object-fit:contain;align-self:center;border:1px solid var(--border)}
+@media(max-width:600px){.section-capture-btn{padding:4px 7px}.capture-modal{padding:8px}.capture-dialog{padding:10px}.capture-preview{max-height:calc(92vh - 120px)}}
 
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .stat-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px}
@@ -3349,6 +3362,102 @@ fbAuth.onAuthStateChanged(function(user) {
     showAuthGate(true, 'Sign in to access your private journal.');
   }
 });
+</script>
+<script>
+(function() {
+  function safeFileName(value) {
+    return String(value || 'section').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+  }
+  function closeCaptureModal(modal) { if (modal && modal.parentNode) modal.parentNode.removeChild(modal); }
+  function showCapturePreview(dataUrl, filename, title) {
+    var modal = document.createElement('div');
+    modal.className = 'capture-modal';
+    modal.id = 'captureModal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Section screenshot preview');
+    modal.setAttribute('data-html2canvas-ignore', 'true');
+    var dialog = document.createElement('div');
+    dialog.className = 'capture-dialog';
+    var head = document.createElement('div');
+    head.className = 'capture-dialog-head';
+    var label = document.createElement('span');
+    label.textContent = 'Ảnh chụp · ' + title;
+    var download = document.createElement('a');
+    download.className = 'capture-download';
+    download.href = dataUrl;
+    download.download = filename;
+    download.textContent = 'Tải ảnh xuống';
+    download.setAttribute('data-html2canvas-ignore', 'true');
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.textContent = 'Đóng';
+    close.setAttribute('aria-label', 'Đóng ảnh xem trước');
+    close.setAttribute('data-html2canvas-ignore', 'true');
+    head.appendChild(label); head.appendChild(download); head.appendChild(close);
+    var image = document.createElement('img');
+    image.className = 'capture-preview';
+    image.src = dataUrl;
+    image.alt = 'Ảnh chụp section ' + title;
+    dialog.appendChild(head); dialog.appendChild(image); modal.appendChild(dialog);
+    modal.addEventListener('click', function(event) { if (event.target === modal) closeCaptureModal(modal); });
+    close.addEventListener('click', function() { closeCaptureModal(modal); });
+    document.addEventListener('keydown', function onEscape(event) {
+      if (event.key === 'Escape') { closeCaptureModal(modal); document.removeEventListener('keydown', onEscape); }
+    });
+    document.body.appendChild(modal);
+  }
+  function captureSection(section, button, title) {
+    if (typeof window.html2canvas !== 'function') {
+      alert('Không tải được công cụ chụp ảnh. Kiểm tra kết nối mạng rồi thử lại.');
+      return;
+    }
+    var originalText = button.textContent;
+    var bounds = section.getBoundingClientRect();
+    var captureWidth = Math.ceil(section.scrollWidth || bounds.width);
+    var captureHeight = Math.ceil(section.scrollHeight || bounds.height);
+    var scale = Math.min(2.5, Math.sqrt(24000000 / Math.max(1, captureWidth * captureHeight)), 30000 / Math.max(captureWidth, captureHeight));
+    scale = Math.max(1, scale);
+    button.disabled = true;
+    button.textContent = 'Đang chụp…';
+    window.html2canvas(section, {
+      scale: scale,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: getComputedStyle(section).backgroundColor || '#111111',
+      logging: false,
+      ignoreElements: function(element) { return element.hasAttribute && element.hasAttribute('data-html2canvas-ignore'); }
+    }).then(function(canvas) {
+      var date = new Date().toISOString().slice(0, 10);
+      var filename = 'trading-journal-' + safeFileName(section.id || title) + '-' + date + '.png';
+      showCapturePreview(canvas.toDataURL('image/png'), filename, title);
+    }).catch(function(error) {
+      console.error('Section screenshot failed:', error);
+      alert('Chưa chụp được section này. Thử lại sau vài giây nhé.');
+    }).finally(function() {
+      button.disabled = false;
+      button.textContent = originalText;
+    });
+  }
+  function initSectionCapture() {
+    document.querySelectorAll('.section').forEach(function(section) {
+      var heading = section.querySelector('.section-title');
+      if (!heading || heading.querySelector('.section-capture-btn')) return;
+      var title = heading.textContent.trim();
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'section-capture-btn';
+      button.textContent = '▣ Chụp';
+      button.title = 'Chụp riêng section ' + title;
+      button.setAttribute('aria-label', 'Chụp riêng section ' + title);
+      button.setAttribute('data-html2canvas-ignore', 'true');
+      button.addEventListener('click', function() { captureSection(section, button, title); });
+      heading.appendChild(button);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSectionCapture);
+  else initSectionCapture();
+})();
 </script>
 </body>
 </html>
