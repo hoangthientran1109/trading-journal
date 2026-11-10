@@ -18,8 +18,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:2px}
 
-.header{text-align:center;padding:20px 0 8px;position:relative}
-.header h1{font-size:27px;font-weight:700;color:var(--gold);letter-spacing:2px}
+.header{text-align:center;padding:20px 0 8px;position:relative;isolation:isolate}
+.header h1{position:relative;z-index:1;font-size:27px;font-weight:700;color:var(--gold);letter-spacing:2px}
+.calm-horizon{position:absolute;z-index:0;top:0;left:50%;transform:translateX(-50%);width:min(760px,96vw);height:98px;overflow:hidden;pointer-events:none;opacity:.8;mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.86) 58%,transparent 100%);background:linear-gradient(180deg,var(--horizon-sky),transparent);transition:background 2s ease,opacity 2s ease}
+.calm-horizon-sun{position:absolute;left:50%;top:24px;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:var(--horizon-sun);box-shadow:0 0 35px 12px var(--horizon-glow);transition:all 2s ease}
+.calm-horizon-ridge{position:absolute;left:0;right:0;bottom:-1px;height:48px;clip-path:polygon(0 72%,12% 48%,24% 68%,38% 29%,52% 70%,67% 40%,82% 67%,92% 37%,100% 62%,100% 100%,0 100%);background:var(--horizon-far);transition:background 2s ease}
+.calm-horizon-ridge.front{height:35px;opacity:.9;clip-path:polygon(0 55%,15% 75%,30% 39%,46% 70%,62% 42%,77% 74%,91% 47%,100% 63%,100% 100%,0 100%);background:var(--horizon-near)}
+html{--horizon-sky:rgba(206,133,91,.13);--horizon-sun:#dca66c;--horizon-glow:rgba(220,166,108,.15);--horizon-far:#201817;--horizon-near:#111112}
+html[data-day-phase="day"]{--horizon-sky:rgba(90,146,175,.12);--horizon-sun:#9bc2c8;--horizon-glow:rgba(120,184,199,.12);--horizon-far:#172127;--horizon-near:#101418}
+html[data-day-phase="evening"]{--horizon-sky:rgba(190,105,79,.15);--horizon-sun:#d88b68;--horizon-glow:rgba(216,139,104,.17);--horizon-far:#241716;--horizon-near:#121112}
+html[data-day-phase="night"]{--horizon-sky:rgba(75,102,152,.16);--horizon-sun:#a8b9d4;--horizon-glow:rgba(136,162,205,.13);--horizon-far:#151b27;--horizon-near:#0c1017}
 .quote-wrap{margin-top:6px;position:relative;display:block;width:100%}
 .quote-line{display:block;width:100%;font-size:14px;color:var(--text);font-style:italic;cursor:pointer;transition:color .2s;border-bottom:1px dashed transparent;line-height:1.6;margin-bottom:2px;white-space:pre-wrap;overflow-wrap:anywhere}
 .quote-line:hover{color:var(--gold);border-bottom-color:var(--gold-dim)}
@@ -201,6 +209,26 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .daily-plan-grid,.daily-plan-scenarios{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .daily-plan-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;min-width:0}
 .daily-plan-card-title{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.daily-plan-title-row{display:flex;align-items:center;gap:12px}
+.calm-reset-button{display:inline-flex;align-items:center;gap:7px;padding:4px 9px;border:1px solid var(--border2);border-radius:18px;background:rgba(255,255,255,.015);color:var(--text-dim);font:inherit;font-size:11px;cursor:pointer;transition:border-color .3s,color .3s,background .3s}
+.calm-reset-button:hover{border-color:rgba(144,176,167,.65);color:#c4d6cf;background:rgba(144,176,167,.07)}
+.calm-reset-dot{width:8px;height:8px;border:1px solid #90b0a7;border-radius:50%;box-shadow:0 0 8px rgba(144,176,167,.28)}
+.breathing-modal[hidden]{display:none!important}
+.breathing-modal{position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(3,7,8,.76);backdrop-filter:blur(8px)}
+.breathing-card{width:min(390px,94vw);min-height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;background:linear-gradient(160deg,#111817,#0b0f10);border:1px solid rgba(144,176,167,.2);border-radius:14px;box-shadow:0 22px 70px rgba(0,0,0,.55);text-align:center;position:relative}
+.breathing-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:transparent;border:1px solid var(--border2);color:var(--text-dim);font-size:18px;cursor:pointer}
+.breathing-title{font-size:17px;color:#c4d6cf;letter-spacing:.4px;margin-bottom:5px}
+.breathing-caption{font-size:12px;color:var(--text-dim);margin-bottom:25px}
+.breathing-orb-wrap{width:182px;height:182px;display:grid;place-items:center;margin:0 auto 22px;position:relative}
+.breathing-orb{position:relative;width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 38% 35%,rgba(188,219,207,.2),rgba(89,129,117,.1) 56%,rgba(70,100,92,.04));border:1px solid rgba(163,202,188,.36);box-shadow:0 0 35px rgba(109,155,138,.14),inset 0 0 28px rgba(155,199,184,.08);animation:calm-breathe 12s ease-in-out infinite}
+.breathing-orb::before{content:"";position:absolute;top:50%;left:50%;width:160px;height:160px;border:1px solid rgba(156,193,181,.11);border-radius:50%;animation:calm-breathe-ring 12s ease-in-out infinite}
+.breathing-phase{color:#d3e2dc;font-size:13px;letter-spacing:1px}
+.breathing-countdown{font-size:13px;color:var(--text-dim);font-variant-numeric:tabular-nums;letter-spacing:1px}
+.breathing-guidance{min-height:20px;color:var(--text-dim);font-size:11px;margin-top:9px}
+.breathing-finish{padding:8px 16px;border-radius:20px;border:1px solid rgba(144,176,167,.35);background:rgba(144,176,167,.08);color:#c4d6cf;font:inherit;font-size:12px;cursor:pointer;margin-top:20px}
+@keyframes calm-breathe{0%,100%{transform:scale(.82);opacity:.72}33.33%,50%{transform:scale(1.12);opacity:1}}
+@keyframes calm-breathe-ring{0%,100%{transform:translate(-50%,-50%) scale(.88);opacity:.35}33.33%,50%{transform:translate(-50%,-50%) scale(1.08);opacity:.8}}
+@media(prefers-reduced-motion:reduce){.breathing-orb,.breathing-orb::before{animation:none}}
 .daily-plan-asset{max-width:260px;margin-bottom:8px}
 .daily-plan-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .daily-plan-table th{font-size:13px;color:var(--text-dim);text-align:left;padding:5px 6px;border:1px solid var(--border2);background:var(--card)}
@@ -557,6 +585,7 @@ body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5
 
 <div id="journalTab">
 <div class="header">
+  <div class="calm-horizon" id="calmHorizon" aria-hidden="true"><div class="calm-horizon-sun"></div><div class="calm-horizon-ridge"></div><div class="calm-horizon-ridge front"></div></div>
   <h1>Trading Journal</h1>
   <div class="quote-wrap" id="quoteWrap">
     <div id="quoteListDisplay"></div>
@@ -568,6 +597,18 @@ body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5
   </div>
 </div>
 <div class="header-line"></div>
+
+<div class="breathing-modal" id="breathingModal" hidden onclick="if(event.target===this) closeCalmReset()">
+  <div class="breathing-card" role="dialog" aria-modal="true" aria-labelledby="breathingTitle">
+    <button class="breathing-close" type="button" onclick="closeCalmReset()" aria-label="Close">×</button>
+    <div class="breathing-title" id="breathingTitle">Một phút trở về hiện tại</div>
+    <div class="breathing-caption">Thả lỏng vai. Để nhịp thở tự nhiên theo vòng sáng.</div>
+    <div class="breathing-orb-wrap"><div class="breathing-orb"><span class="breathing-phase" id="breathingPhase">Hít vào</span></div></div>
+    <div class="breathing-countdown" id="breathingCountdown">01:00</div>
+    <div class="breathing-guidance" id="breathingGuidance">Không cần vội đi đâu cả.</div>
+    <button class="breathing-finish" type="button" onclick="closeCalmReset()">Kết thúc</button>
+  </div>
+</div>
 
 <div id="settings" class="section">
   <div class="section-title">Capital & Risk</div>
@@ -659,7 +700,7 @@ body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5
 <div id="daily-plan-section" class="section">
   <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px">
     <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
-      <div class="section-title" style="margin-bottom:0">Daily Trading Plan</div>
+      <div class="daily-plan-title-row"><div class="section-title" style="width:auto;margin-bottom:0">Daily Trading Plan</div><button type="button" class="calm-reset-button" onclick="startCalmReset()" title="Một phút thở chậm"><span class="calm-reset-dot"></span> Thở 1 phút</button></div>
       <div style="display:flex;gap:6px">
         <button class="action-btn" id="dailyPlanSaveBtn" onclick="saveDailyPlan()">Save</button>
         <button class="action-btn" id="dailyPlanEditBtn" onclick="editDailyPlan()">Edit</button>
@@ -3332,6 +3373,49 @@ function setTimeNow() {
   document.getElementById('tradeMinute').value = (m < 10 ? '0' : '') + m;
   document.getElementById('tradeAmPm').value = ampm;
 }
+
+function updateCalmHorizon() {
+  var hour = new Date().getHours();
+  var phase = hour >= 5 && hour < 11 ? 'morning' : (hour >= 11 && hour < 17 ? 'day' : (hour >= 17 && hour < 21 ? 'evening' : 'night'));
+  document.documentElement.setAttribute('data-day-phase', phase);
+}
+updateCalmHorizon();
+setInterval(updateCalmHorizon, 60000);
+
+var calmResetTimer = null;
+var calmResetEndsAt = 0;
+function startCalmReset() {
+  var modal = document.getElementById('breathingModal');
+  if (!modal) return;
+  if (calmResetTimer) clearInterval(calmResetTimer);
+  calmResetEndsAt = Date.now() + 60000;
+  modal.hidden = false;
+  document.body.classList.add('calm-reset-active');
+  updateCalmReset();
+  calmResetTimer = setInterval(updateCalmReset, 250);
+}
+function updateCalmReset() {
+  var remainingMs = Math.max(0, calmResetEndsAt - Date.now());
+  var remaining = Math.ceil(remainingMs / 1000);
+  var elapsed = 60000 - remainingMs;
+  var cyclePosition = elapsed % 12000;
+  var phase = cyclePosition < 4000 ? 'Hít vào' : (cyclePosition < 6000 ? 'Giữ nhẹ' : 'Thở ra');
+  document.getElementById('breathingPhase').textContent = remainingMs > 0 ? phase : 'Xong rồi';
+  document.getElementById('breathingCountdown').textContent = String(Math.floor(remaining / 60)).padStart(2, '0') + ':' + String(remaining % 60).padStart(2, '0');
+  document.getElementById('breathingGuidance').textContent = remainingMs > 0 ? 'Thở theo vòng sáng, nhẹ nhàng và không gắng sức.' : 'Khi sẵn sàng, quay lại với kế hoạch của mày.';
+  if (remainingMs <= 0 && calmResetTimer) { clearInterval(calmResetTimer); calmResetTimer = null; document.body.classList.remove('calm-reset-active'); }
+}
+function closeCalmReset() {
+  if (calmResetTimer) clearInterval(calmResetTimer);
+  calmResetTimer = null;
+  document.body.classList.remove('calm-reset-active');
+  var modal = document.getElementById('breathingModal');
+  if (modal) modal.hidden = true;
+}
+document.addEventListener('keydown', function(event) {
+  var modal = document.getElementById('breathingModal');
+  if (event.key === 'Escape' && modal && !modal.hidden) closeCalmReset();
+});
 
 var currentTheme = 'dark';
 document.documentElement.setAttribute('data-theme', currentTheme);
