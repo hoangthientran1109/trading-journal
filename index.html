@@ -364,13 +364,6 @@ td .del-btn:hover{border-color:var(--red);color:var(--red)}
 
 .tab-bar{display:flex;gap:0;margin-bottom:12px;border-bottom:2px solid var(--border2);align-items:center;justify-content:space-between}
 .tab-bar-left{display:flex;align-items:center;gap:10px;min-width:0}
-.session-clocks{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.session-clock{display:flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--border);border-radius:5px;background:var(--card);font-size:11px;line-height:1.2;white-space:nowrap}
-.session-clock-city{color:var(--text-dim);font-weight:700;letter-spacing:.45px}
-.session-clock-time{font-variant-numeric:tabular-nums;color:var(--text);font-weight:700}
-.session-clock-state{color:var(--text-dim);font-size:10px}
-.session-clock.is-open{border-color:rgba(76,175,80,.35)}
-.session-clock.is-open .session-clock-state{color:var(--green)}
 .tab-btn{background:none;border:none;color:var(--text-dim);font-family:var(--font);font-size:16px;font-weight:700;padding:8px 24px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;letter-spacing:.5px}
 .tab-btn:hover{color:var(--text)}
 .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
@@ -466,7 +459,6 @@ body.focus-mode #form-section{animation-delay:.04s}
 body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5px}
 @keyframes focus-reveal{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:768px){body.focus-mode .tab-bar{flex-wrap:wrap;row-gap:6px}.focus-toggle,.focus-sound-toggle{padding:5px 8px;font-size:11px}}
-@media(max-width:768px){.tab-bar-left{gap:6px}.session-clocks{gap:4px}.session-clock{padding:4px 5px;gap:4px}.session-clock-city{font-size:9px}.session-clock-state{display:none}}
 @media(max-width:768px){
   .daily-plan-grid,.daily-plan-scenarios,.daily-plan-levels{grid-template-columns:1fr}
   body{padding:8px}
@@ -557,10 +549,6 @@ body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5
 <div class="tab-bar">
   <div class="tab-bar-left">
     <button class="action-btn gallery-toolbar-button" type="button" onclick="openInvestorManager()">＋ Add investor</button>
-    <div class="session-clocks" aria-label="London and New York trading sessions">
-      <div class="session-clock" id="londonSessionClock" title="London session: 08:00–17:00 London time, Monday to Friday"><span class="session-clock-city">LONDON</span><span class="session-clock-time" data-session-time></span><span class="session-clock-state" data-session-state></span></div>
-      <div class="session-clock" id="newYorkSessionClock" title="New York session: 08:00–17:00 New York time, Monday to Friday"><span class="session-clock-city">NEW YORK</span><span class="session-clock-time" data-session-time></span><span class="session-clock-state" data-session-state></span></div>
-    </div>
   </div>
   <div class="auth-identity" id="authIdentity" hidden><span id="authUserEmail"></span><button type="button" onclick="signOutGoogle()">Sign out</button></div>
   <button class="focus-toggle" id="focusToggle" type="button" onclick="toggleFocusMode()" aria-pressed="false" title="Focus mode">◎ Focus</button>
@@ -3344,65 +3332,6 @@ function setTimeNow() {
   document.getElementById('tradeMinute').value = (m < 10 ? '0' : '') + m;
   document.getElementById('tradeAmPm').value = ampm;
 }
-
-function zonedParts(date, timeZone) {
-  var parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
-    weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
-  }).formatToParts(date);
-  var out = {};
-  parts.forEach(function(part) { if (part.type !== 'literal') out[part.type] = part.value; });
-  return out;
-}
-
-function localSessionTimeToDate(year, month, day, hour, minute, timeZone) {
-  var targetUtc = Date.UTC(year, month - 1, day, hour, minute);
-  var guess = new Date(targetUtc);
-  for (var attempt = 0; attempt < 4; attempt++) {
-    var local = zonedParts(guess, timeZone);
-    var representedUtc = Date.UTC(Number(local.year), Number(local.month) - 1, Number(local.day), Number(local.hour), Number(local.minute));
-    var adjustment = targetUtc - representedUtc;
-    if (!adjustment) break;
-    guess = new Date(guess.getTime() + adjustment);
-  }
-  return guess;
-}
-
-function updateOneSessionClock(elementId, timeZone) {
-  var el = document.getElementById(elementId);
-  if (!el) return;
-  var now = new Date();
-  var local = zonedParts(now, timeZone);
-  var timeEl = el.querySelector('[data-session-time]');
-  var stateEl = el.querySelector('[data-session-state]');
-  timeEl.textContent = new Intl.DateTimeFormat('en-GB', {timeZone: timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23'}).format(now);
-  var weekdayNumber = {Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6, Sun:7}[local.weekday];
-  var minuteOfDay = Number(local.hour) * 60 + Number(local.minute);
-  var sessionOpen = weekdayNumber >= 1 && weekdayNumber <= 5 && minuteOfDay >= 8 * 60 && minuteOfDay < 17 * 60;
-  var target;
-  if (sessionOpen) {
-    target = localSessionTimeToDate(Number(local.year), Number(local.month), Number(local.day), 17, 0, timeZone);
-  } else {
-    for (var offset = 0; offset <= 7; offset++) {
-      var candidateDay = new Date(Date.UTC(Number(local.year), Number(local.month) - 1, Number(local.day) + offset));
-      var candidateWeekday = candidateDay.getUTCDay();
-      if (candidateWeekday === 0 || candidateWeekday === 6) continue;
-      var candidate = localSessionTimeToDate(candidateDay.getUTCFullYear(), candidateDay.getUTCMonth() + 1, candidateDay.getUTCDate(), 8, 0, timeZone);
-      if (candidate > now) { target = candidate; break; }
-    }
-  }
-  var minutesLeft = target ? Math.max(0, Math.ceil((target.getTime() - now.getTime()) / 60000)) : 0;
-  var countdown = minutesLeft >= 60 ? Math.floor(minutesLeft / 60) + 'h ' + String(minutesLeft % 60).padStart(2, '0') + 'm' : minutesLeft + 'm';
-  el.classList.toggle('is-open', sessionOpen);
-  stateEl.textContent = (sessionOpen ? 'OPEN · closes ' : 'CLOSED · opens ') + countdown;
-}
-
-function updateSessionClocks() {
-  updateOneSessionClock('londonSessionClock', 'Europe/London');
-  updateOneSessionClock('newYorkSessionClock', 'America/New_York');
-}
-updateSessionClocks();
-setInterval(updateSessionClocks, 30000);
 
 var currentTheme = 'dark';
 document.documentElement.setAttribute('data-theme', currentTheme);
