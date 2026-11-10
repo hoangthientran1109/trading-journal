@@ -3512,6 +3512,29 @@ fbAuth.onAuthStateChanged(function(user) {
       allowTaint: false,
       backgroundColor: getComputedStyle(section).backgroundColor || '#111111',
       logging: false,
+      onclone: function(clonedDocument) {
+        section.querySelectorAll('textarea').forEach(function(source) {
+          var clonedTextarea = source.id ? clonedDocument.getElementById(source.id) : null;
+          if (!clonedTextarea || !clonedTextarea.parentNode) return;
+          var computed = window.getComputedStyle(source);
+          var textBlock = clonedDocument.createElement('div');
+          textBlock.className = source.className + ' screenshot-textarea-copy';
+          textBlock.textContent = source.value;
+          ['width','boxSizing','paddingTop','paddingRight','paddingBottom','paddingLeft','borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth','borderTopStyle','borderRightStyle','borderBottomStyle','borderLeftStyle','borderTopColor','borderRightColor','borderBottomColor','borderLeftColor','borderRadius','fontFamily','fontSize','fontWeight','fontStyle','lineHeight','letterSpacing','textAlign','color','backgroundColor'].forEach(function(property) {
+            textBlock.style[property] = computed[property];
+          });
+          textBlock.style.whiteSpace = 'pre-wrap';
+          textBlock.style.overflowWrap = 'anywhere';
+          textBlock.style.wordBreak = 'break-word';
+          textBlock.style.overflow = 'visible';
+          textBlock.style.resize = 'none';
+          textBlock.style.height = 'auto';
+          textBlock.style.minHeight = computed.minHeight;
+          textBlock.style.maxHeight = 'none';
+          clonedTextarea.parentNode.replaceChild(textBlock, clonedTextarea);
+          textBlock.style.height = Math.max(parseFloat(computed.height) || 0, textBlock.scrollHeight) + 'px';
+        });
+      },
       ignoreElements: function(element) { return element.hasAttribute && element.hasAttribute('data-html2canvas-ignore'); }
     }).then(function(canvas) {
       var date = new Date().toISOString().slice(0, 10);
