@@ -450,6 +450,17 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 @media(min-width:1900px){.investor-rail{display:block}}
 @media(max-width:1899px){.gallery-toolbar-button{display:inline-flex}}
 
+.focus-toggle,.focus-sound-toggle{background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:5px 10px;cursor:pointer;font-size:12px;font-family:var(--font);font-weight:700;transition:all .18s;color:var(--text-dim);white-space:nowrap}
+.focus-toggle:hover,.focus-sound-toggle:hover,.focus-toggle[aria-pressed="true"],.focus-sound-toggle[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.focus-sound-toggle{display:none}
+body.focus-mode{max-width:1400px}
+body.focus-mode .section:not(#daily-plan-section):not(#form-section){display:none!important}
+body.focus-mode .investor-rail,body.focus-mode .gallery-toolbar-button{display:none!important}
+body.focus-mode #daily-plan-section,body.focus-mode #form-section{border-color:rgba(201,168,76,.32);box-shadow:0 0 28px rgba(201,168,76,.055);animation:focus-reveal .24s ease both}
+body.focus-mode #form-section{animation-delay:.04s}
+body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5px}
+@keyframes focus-reveal{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){body.focus-mode .tab-bar{flex-wrap:wrap;row-gap:6px}.focus-toggle,.focus-sound-toggle{padding:5px 8px;font-size:11px}}
 @media(max-width:768px){
   .daily-plan-grid,.daily-plan-scenarios,.daily-plan-levels{grid-template-columns:1fr}
   body{padding:8px}
@@ -542,7 +553,8 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
     <button class="action-btn gallery-toolbar-button" type="button" onclick="openInvestorManager()">＋ Add investor</button>
   </div>
   <div class="auth-identity" id="authIdentity" hidden><span id="authUserEmail"></span><button type="button" onclick="signOutGoogle()">Sign out</button></div>
-  <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Toggle dark/light mode">&#9790;</button>
+  <button class="focus-toggle" id="focusToggle" type="button" onclick="toggleFocusMode()" aria-pressed="false" title="Focus mode">◎ Focus</button>
+  <button class="focus-sound-toggle" id="focusSoundToggle" type="button" onclick="toggleFocusSound()" aria-pressed="false" title="Play optional rain ambience">♫ Mưa: Tắt</button>  <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Toggle dark/light mode">&#9790;</button>
 </div>
 
 <div id="journalTab">
@@ -3457,6 +3469,81 @@ fbAuth.onAuthStateChanged(function(user) {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSectionCapture);
   else initSectionCapture();
+})();
+</script>
+<script>
+(function(){
+  var focusAudioContext = null;
+  var focusRainSource = null;
+  var focusRainGain = null;
+  function syncFocusButtons(){
+    var active = document.body.classList.contains('focus-mode');
+    var focusButton = document.getElementById('focusToggle');
+    var soundButton = document.getElementById('focusSoundToggle');
+    if (focusButton) { focusButton.setAttribute('aria-pressed', String(active)); focusButton.textContent = active ? '× Thoát Focus' : '◎ Focus'; focusButton.title = active ? 'Exit focus mode' : 'Focus mode'; }
+    if (soundButton) { var playing = !!focusRainSource; soundButton.setAttribute('aria-pressed', String(playing)); soundButton.textContent = playing ? '♫ Mưa: Bật' : '♫ Mưa: Tắt'; }
+  }
+  window.toggleFocusMode = function(){
+    var entering = !document.body.classList.contains('focus-mode');
+    document.body.classList.toggle('focus-mode', entering);
+    if (!entering) stopFocusRain();
+    syncFocusButtons();
+  };
+  function startFocusRain(){
+    var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) { alert('Trình duyệt này chưa hỗ trợ âm thanh nền.'); return; }
+    try {
+      focusAudioContext = new AudioContextClass();
+      if (focusAudioContext.state === 'suspended') focusAudioContext.resume();
+      var sampleRate = focusAudioContext.sampleRate;
+      var buffer = focusAudioContext.createBuffer(1, sampleRate * 3, sampleRate);
+      var samples = buffer.getChannelData(0);
+      var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+      for (var i=0;i<samples.length;i++) {
+        var white = Math.random()*2-1;
+        b0=0.99886*b0+white*0.0555179;
+        b1=0.99332*b1+white*0.0750759;
+        b2=0.96900*b2+white*0.1538520;
+        b3=0.86650*b3+white*0.3104856;
+        b4=0.55000*b4+white*0.5329522;
+        b5=-0.7616*b5-white*0.0168980;
+        samples[i]=(b0+b1+b2+b3+b4+b5+b6+white*0.5362)*0.11;
+        b6=white*0.115926;
+      }
+      focusRainSource = focusAudioContext.createBufferSource();
+      focusRainSource.buffer = buffer;
+      focusRainSource.loop = true;
+      var highPass = focusAudioContext.createBiquadFilter();
+      highPass.type = 'highpass'; highPass.frequency.value = 150;
+      var lowPass = focusAudioContext.createBiquadFilter();
+      lowPass.type = 'lowpass'; lowPass.frequency.value = 1300;
+      focusRainGain = focusAudioContext.createGain();
+      focusRainGain.gain.setValueAtTime(0, focusAudioContext.currentTime);
+      focusRainGain.gain.linearRampToValueAtTime(0.18, focusAudioContext.currentTime+0.8);
+      focusRainSource.connect(highPass); highPass.connect(lowPass); lowPass.connect(focusRainGain); focusRainGain.connect(focusAudioContext.destination);
+      focusRainSource.start();
+      syncFocusButtons();
+    } catch (error) {
+      console.error('Could not start focus ambience:', error);
+      stopFocusRain();
+      alert('Chưa bật được âm thanh. Thử lại sau nhé.');
+    }
+  }
+  function stopFocusRain(){
+    if (focusRainGain && focusAudioContext) {
+      try { focusRainGain.gain.cancelScheduledValues(focusAudioContext.currentTime); focusRainGain.gain.setTargetAtTime(0,focusAudioContext.currentTime,0.12); } catch(e) {}
+    }
+    var source=focusRainSource, context=focusAudioContext;
+    focusRainSource=null; focusRainGain=null; focusAudioContext=null;
+    if(source){try{source.stop();}catch(e){} try{source.disconnect();}catch(e){}}
+    if(context){try{context.close();}catch(e){}}
+    syncFocusButtons();
+  }
+  window.toggleFocusSound = function(){
+    if (!document.body.classList.contains('focus-mode')) return;
+    if (focusRainSource) stopFocusRain(); else startFocusRain();
+  };
+  syncFocusButtons();
 })();
 </script>
 </body>
