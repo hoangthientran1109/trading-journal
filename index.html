@@ -235,6 +235,10 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .daily-plan-table td{border:1px solid var(--border);padding:2px}
 .daily-plan-table input{width:100%;min-width:0;background:var(--card);color:var(--text);border:1px solid transparent;border-radius:3px;padding:6px;font-family:var(--font);font-size:13px}
 .daily-plan-table input:focus{outline:none;border-color:var(--gold)}
+.daily-plan-row-actions{display:flex;justify-content:flex-end;margin-top:5px}
+.daily-plan-add-row{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border:1px solid var(--border2);border-radius:14px;background:transparent;color:var(--gold);font:600 11px var(--font);cursor:pointer;transition:background .15s,border-color .15s}
+.daily-plan-add-row:hover:not(:disabled){background:var(--gold-dim);border-color:var(--gold)}
+.daily-plan-add-row:disabled{opacity:.4;cursor:not-allowed}
 .daily-plan-conclusion{margin-top:8px}
 .daily-plan-conclusion textarea,.daily-plan-scenario{width:100%;min-height:90px;resize:vertical;background:var(--card);color:var(--text);border:1px solid var(--border2);border-radius:4px;padding:7px 8px;font-family:var(--font);font-size:14px;line-height:1.45}
 .daily-plan-conclusion textarea:focus,.daily-plan-scenario:focus{outline:none;border-color:var(--gold)}
@@ -714,25 +718,27 @@ body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5
     <div class="daily-plan-card">
       <div class="daily-plan-card-title">1. Xu hướng chung</div>
       <div class="form-group daily-plan-asset"><label for="planGeneralAsset">Asset</label><input id="planGeneralAsset" class="daily-plan-input" data-plan-field="generalAsset" list="dailyPlanAssets" placeholder="Chọn hoặc nhập asset"></div>
-      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th></tr></thead><tbody>
+      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th></tr></thead><tbody id="generalPlanRows">
         <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="0"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="0"></td></tr>
         <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="1"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="1"></td></tr>
         <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="2"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="2"></td></tr>
         <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="3"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="3"></td></tr>
         <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="4"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="4"></td></tr>
       </tbody></table>
+      <div class="daily-plan-row-actions"><button type="button" class="daily-plan-add-row" data-plan-add="general" onclick="addDailyPlanRow('general')" aria-label="Thêm dòng xu hướng chung"><span aria-hidden="true">＋</span> Thêm dòng</button></div>
       <div class="form-group daily-plan-conclusion"><label for="planGeneralConclusion">Kết luận</label><textarea id="planGeneralConclusion" class="daily-plan-input" data-plan-field="generalConclusion" placeholder="Ghi kết luận xu hướng chung..."></textarea></div>
     </div>
     <div class="daily-plan-card">
       <div class="daily-plan-card-title">2. Khung thời gian</div>
       <div class="form-group daily-plan-asset"><label for="planTimeframeAsset">Asset</label><input id="planTimeframeAsset" class="daily-plan-input" data-plan-field="timeframeAsset" list="dailyPlanAssets" placeholder="Chọn hoặc nhập asset"></div>
-      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th></tr></thead><tbody>
+      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th></tr></thead><tbody id="timeframePlanRows">
         <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="0"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="0"></td></tr>
         <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="1"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="1"></td></tr>
         <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="2"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="2"></td></tr>
         <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="3"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="3"></td></tr>
         <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="4"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="4"></td></tr>
       </tbody></table>
+      <div class="daily-plan-row-actions"><button type="button" class="daily-plan-add-row" data-plan-add="timeframe" onclick="addDailyPlanRow('timeframe')" aria-label="Thêm dòng khung thời gian"><span aria-hidden="true">＋</span> Thêm dòng</button></div>
       <div class="form-group daily-plan-conclusion"><label for="planTimeframeConclusion">Kết luận</label><textarea id="planTimeframeConclusion" class="daily-plan-input" data-plan-field="timeframeConclusion" placeholder="Ghi kết luận khung thời gian..."></textarea></div>
     </div>
   </div>
@@ -2674,6 +2680,57 @@ function emptyDailyPlan() {
   return { generalAsset: '', generalBullish: ['', '', '', '', ''], generalBearish: ['', '', '', '', ''], generalConclusion: '', timeframeAsset: '', timeframeBullish: ['', '', '', '', ''], timeframeBearish: ['', '', '', '', ''], timeframeConclusion: '', resistance: '', support: '', bullScenario: '', bullRating: '', bullMindset: '', bearScenario: '', bearRating: '', bearMindset: '' };
 }
 
+function markDailyPlanDirty() {
+  if (!dailyPlanLocked) dailyPlanDirty = true;
+}
+
+function renderDailyPlanRows(section, bullishValues, bearishValues) {
+  var body = document.getElementById(section === 'general' ? 'generalPlanRows' : 'timeframePlanRows');
+  if (!body) return;
+  bullishValues = Array.isArray(bullishValues) ? bullishValues : [];
+  bearishValues = Array.isArray(bearishValues) ? bearishValues : [];
+  var rowCount = Math.max(5, bullishValues.length, bearishValues.length);
+  body.textContent = '';
+  for (var i = 0; i < rowCount; i++) {
+    var row = document.createElement('tr');
+    [section + 'Bullish', section + 'Bearish'].forEach(function(key, column) {
+      var cell = document.createElement('td');
+      var input = document.createElement('input');
+      input.className = 'daily-plan-input';
+      input.setAttribute('data-plan-list', key);
+      input.setAttribute('data-plan-index', String(i));
+      input.value = (column === 0 ? bullishValues[i] : bearishValues[i]) || '';
+      input.disabled = dailyPlanLocked;
+      input.addEventListener('input', markDailyPlanDirty);
+      input.addEventListener('change', markDailyPlanDirty);
+      cell.appendChild(input);
+      row.appendChild(cell);
+    });
+    body.appendChild(row);
+  }
+}
+
+function addDailyPlanRow(section) {
+  if (dailyPlanLocked || (section !== 'general' && section !== 'timeframe')) return;
+  var body = document.getElementById(section === 'general' ? 'generalPlanRows' : 'timeframePlanRows');
+  if (!body) return;
+  var row = document.createElement('tr');
+  [section + 'Bullish', section + 'Bearish'].forEach(function(key) {
+    var cell = document.createElement('td');
+    var input = document.createElement('input');
+    input.className = 'daily-plan-input';
+    input.setAttribute('data-plan-list', key);
+    input.setAttribute('data-plan-index', String(body.rows.length));
+    input.addEventListener('input', markDailyPlanDirty);
+    input.addEventListener('change', markDailyPlanDirty);
+    cell.appendChild(input);
+    row.appendChild(cell);
+  });
+  body.appendChild(row);
+  markDailyPlanDirty();
+  body.lastElementChild.querySelector('input').focus();
+}
+
 function readDailyPlanForm() {
   var plan = emptyDailyPlan();
   document.querySelectorAll('.daily-plan-input[data-plan-field]').forEach(function(el) { plan[el.getAttribute('data-plan-field')] = el.value; });
@@ -2699,6 +2756,7 @@ function updateDailyPlanSelectColors() {
 function setDailyPlanLocked(locked) {
   dailyPlanLocked = locked;
   document.querySelectorAll('.daily-plan-input').forEach(function(el) { el.disabled = locked; });
+  document.querySelectorAll('.daily-plan-add-row').forEach(function(el) { el.disabled = locked; });
   document.getElementById('dailyPlanSaveBtn').disabled = locked;
   document.getElementById('dailyPlanEditBtn').disabled = !locked;
 }
@@ -2738,6 +2796,8 @@ function renderDailyPlan() {
   if (!data.dailyPlans) data.dailyPlans = {};
   var storedPlan = data.dailyPlans[activeDailyPlanDate];
   var plan = storedPlan || emptyDailyPlan();
+  renderDailyPlanRows('general', plan.generalBullish, plan.generalBearish);
+  renderDailyPlanRows('timeframe', plan.timeframeBullish, plan.timeframeBearish);
   document.querySelectorAll('.daily-plan-input[data-plan-field]').forEach(function(el) { el.value = plan[el.getAttribute('data-plan-field')] || ''; });
   document.querySelectorAll('.daily-plan-input[data-plan-list]').forEach(function(el) {
     var key = el.getAttribute('data-plan-list');
@@ -2782,9 +2842,8 @@ function initDailyPlan() {
     renderDailyPlan();
   });
   document.querySelectorAll('.daily-plan-input').forEach(function(el) {
-    var markDirty = function() { if (!dailyPlanLocked) dailyPlanDirty = true; };
-    el.addEventListener('input', markDirty);
-    el.addEventListener('change', markDirty);
+    el.addEventListener('input', markDailyPlanDirty);
+    el.addEventListener('change', markDailyPlanDirty);
   });
   document.querySelectorAll('.daily-plan-select').forEach(function(el) {
     el.addEventListener('change', updateDailyPlanSelectColors);
