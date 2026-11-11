@@ -43,6 +43,11 @@ html[data-day-phase="night"]{--horizon-sky:rgba(75,102,152,.16);--horizon-sun:#a
 .quote-editing .quote-input{display:inline-block}
 .quote-editing .quote-actions{display:flex}
 .header-line{width:40px;height:2px;background:var(--gold);margin:8px auto 16px;border-radius:1px}
+.journal-footer{position:relative;width:100%;height:112px;margin:28px 0 8px;overflow:hidden;opacity:.68;mask-image:linear-gradient(to bottom,transparent 0%,#000 28%,rgba(0,0,0,.86) 82%,transparent 100%)}
+.journal-footer::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.16) 18%,rgba(201,168,76,.12) 82%,transparent)}
+.journal-footer::after{content:"";position:absolute;left:50%;bottom:7px;width:4px;height:4px;border-radius:50%;background:rgba(201,168,76,.3);box-shadow:0 0 12px rgba(201,168,76,.16)}
+.journal-footer svg{display:block;width:100%;height:100%}
+.journal-footer path{fill:none;stroke:rgba(169,178,165,.16);stroke-width:1;vector-effect:non-scaling-stroke}
 
 .section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
 .section-title{font-size:16px;font-weight:700;color:var(--gold);text-transform:capitalize;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
@@ -898,6 +903,22 @@ body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5
   </div>
   <div class="rp-insights" id="rpInsights"></div>
 </div>
+
+<footer class="journal-footer" aria-hidden="true">
+  <svg viewBox="0 0 1000 140" preserveAspectRatio="none" focusable="false">
+    <path d="M-30 49 C28 5 122 4 190 39 C255 72 229 119 155 126 C76 134 22 101 -30 111"/>
+    <path d="M-24 58 C34 20 119 18 177 47 C226 72 207 109 151 116 C84 124 29 98 -24 104"/>
+    <path d="M-17 68 C38 34 115 32 164 55 C201 74 185 99 148 106 C94 116 37 94 -17 97"/>
+    <path d="M-10 78 C43 48 110 46 151 64 C177 76 166 92 143 97 C101 107 46 90 -10 90"/>
+    <path d="M1030 38 C966 0 875 7 817 42 C758 77 785 119 857 127 C925 135 979 102 1030 113"/>
+    <path d="M1023 50 C966 15 882 19 832 49 C785 77 804 108 860 116 C922 125 974 99 1023 104"/>
+    <path d="M1016 62 C963 31 887 33 846 56 C810 76 825 99 862 106 C913 116 967 94 1016 96"/>
+    <path d="M1010 73 C958 47 891 47 855 65 C830 78 841 94 864 99 C906 108 960 89 1010 89"/>
+    <path d="M292 122 C364 105 379 56 452 53 C523 50 545 105 618 105 C664 105 691 83 724 67"/>
+    <path d="M321 129 C379 111 398 70 454 67 C513 64 535 113 608 114 C652 115 681 96 708 81"/>
+    <path d="M350 136 C397 119 416 84 459 81 C505 78 529 121 599 123 C639 124 667 109 692 96"/>
+  </svg>
+</footer>
 
 </div>
 
