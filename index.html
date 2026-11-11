@@ -232,11 +232,14 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .daily-plan-asset{max-width:260px;margin-bottom:8px}
 .daily-plan-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .daily-plan-table th{font-size:13px;color:var(--text-dim);text-align:left;padding:5px 6px;border:1px solid var(--border2);background:var(--card)}
+.daily-plan-table th:last-child,.daily-plan-table td:last-child{width:30px;text-align:center;padding:2px}
+.daily-plan-row-delete{width:23px;height:23px;border:0;border-radius:4px;background:transparent;color:var(--text-dim);font:700 16px var(--font);line-height:1;cursor:pointer}
+.daily-plan-row-delete:hover{background:rgba(239,83,80,.12);color:var(--red)}
 .daily-plan-table td{border:1px solid var(--border);padding:2px}
 .daily-plan-table input{width:100%;min-width:0;background:var(--card);color:var(--text);border:1px solid transparent;border-radius:3px;padding:6px;font-family:var(--font);font-size:13px}
 .daily-plan-table input:focus{outline:none;border-color:var(--gold)}
 .daily-plan-row-actions{display:flex;justify-content:flex-end;margin-top:5px}
-.daily-plan-add-row{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border:1px solid var(--border2);border-radius:14px;background:transparent;color:var(--gold);font:600 11px var(--font);cursor:pointer;transition:background .15s,border-color .15s}
+.daily-plan-add-row{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;padding:0;border:1px solid var(--border2);border-radius:50%;background:transparent;color:var(--gold);font:600 15px var(--font);line-height:1;cursor:pointer;transition:background .15s,border-color .15s}
 .daily-plan-add-row:hover:not(:disabled){background:var(--gold-dim);border-color:var(--gold)}
 .daily-plan-add-row:disabled{opacity:.4;cursor:not-allowed}
 .daily-plan-conclusion{margin-top:8px}
@@ -718,27 +721,15 @@ body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5
     <div class="daily-plan-card">
       <div class="daily-plan-card-title">1. Xu hướng chung</div>
       <div class="form-group daily-plan-asset"><label for="planGeneralAsset">Asset</label><input id="planGeneralAsset" class="daily-plan-input" data-plan-field="generalAsset" list="dailyPlanAssets" placeholder="Chọn hoặc nhập asset"></div>
-      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th></tr></thead><tbody id="generalPlanRows">
-        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="0"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="0"></td></tr>
-        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="1"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="1"></td></tr>
-        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="2"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="2"></td></tr>
-        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="3"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="3"></td></tr>
-        <tr><td><input class="daily-plan-input" data-plan-list="generalBullish" data-plan-index="4"></td><td><input class="daily-plan-input" data-plan-list="generalBearish" data-plan-index="4"></td></tr>
-      </tbody></table>
-      <div class="daily-plan-row-actions"><button type="button" class="daily-plan-add-row" data-plan-add="general" onclick="addDailyPlanRow('general')" aria-label="Thêm dòng xu hướng chung"><span aria-hidden="true">＋</span> Thêm dòng</button></div>
+      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th><th></th></tr></thead><tbody id="generalPlanRows"></tbody></table>
+      <div class="daily-plan-row-actions"><button type="button" class="daily-plan-add-row" data-plan-add="general" onclick="addDailyPlanRow('general')" aria-label="Thêm dòng xu hướng chung" title="Thêm dòng"><span aria-hidden="true">＋</span></button></div>
       <div class="form-group daily-plan-conclusion"><label for="planGeneralConclusion">Kết luận</label><textarea id="planGeneralConclusion" class="daily-plan-input" data-plan-field="generalConclusion" placeholder="Ghi kết luận xu hướng chung..."></textarea></div>
     </div>
     <div class="daily-plan-card">
       <div class="daily-plan-card-title">2. Khung thời gian</div>
       <div class="form-group daily-plan-asset"><label for="planTimeframeAsset">Asset</label><input id="planTimeframeAsset" class="daily-plan-input" data-plan-field="timeframeAsset" list="dailyPlanAssets" placeholder="Chọn hoặc nhập asset"></div>
-      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th></tr></thead><tbody id="timeframePlanRows">
-        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="0"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="0"></td></tr>
-        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="1"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="1"></td></tr>
-        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="2"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="2"></td></tr>
-        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="3"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="3"></td></tr>
-        <tr><td><input class="daily-plan-input" data-plan-list="timeframeBullish" data-plan-index="4"></td><td><input class="daily-plan-input" data-plan-list="timeframeBearish" data-plan-index="4"></td></tr>
-      </tbody></table>
-      <div class="daily-plan-row-actions"><button type="button" class="daily-plan-add-row" data-plan-add="timeframe" onclick="addDailyPlanRow('timeframe')" aria-label="Thêm dòng khung thời gian"><span aria-hidden="true">＋</span> Thêm dòng</button></div>
+      <table class="daily-plan-table"><thead><tr><th>Tăng</th><th>Giảm</th><th></th></tr></thead><tbody id="timeframePlanRows"></tbody></table>
+      <div class="daily-plan-row-actions"><button type="button" class="daily-plan-add-row" data-plan-add="timeframe" onclick="addDailyPlanRow('timeframe')" aria-label="Thêm dòng khung thời gian" title="Thêm dòng"><span aria-hidden="true">＋</span></button></div>
       <div class="form-group daily-plan-conclusion"><label for="planTimeframeConclusion">Kết luận</label><textarea id="planTimeframeConclusion" class="daily-plan-input" data-plan-field="timeframeConclusion" placeholder="Ghi kết luận khung thời gian..."></textarea></div>
     </div>
   </div>
@@ -2689,7 +2680,7 @@ function renderDailyPlanRows(section, bullishValues, bearishValues) {
   if (!body) return;
   bullishValues = Array.isArray(bullishValues) ? bullishValues : [];
   bearishValues = Array.isArray(bearishValues) ? bearishValues : [];
-  var rowCount = Math.max(5, bullishValues.length, bearishValues.length);
+  var rowCount = Math.max(1, bullishValues.length, bearishValues.length);
   body.textContent = '';
   for (var i = 0; i < rowCount; i++) {
     var row = document.createElement('tr');
@@ -2706,6 +2697,17 @@ function renderDailyPlanRows(section, bullishValues, bearishValues) {
       cell.appendChild(input);
       row.appendChild(cell);
     });
+    var actionCell = document.createElement('td');
+    var removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.className = 'daily-plan-row-delete';
+    removeButton.textContent = '−';
+    removeButton.title = 'Xóa dòng';
+    removeButton.setAttribute('aria-label', 'Xóa dòng ' + (i + 1));
+    removeButton.disabled = dailyPlanLocked || rowCount <= 1;
+    removeButton.onclick = function() { removeDailyPlanRow(section, Array.prototype.indexOf.call(body.rows, this.closest('tr'))); };
+    actionCell.appendChild(removeButton);
+    row.appendChild(actionCell);
     body.appendChild(row);
   }
 }
@@ -2726,13 +2728,42 @@ function addDailyPlanRow(section) {
     cell.appendChild(input);
     row.appendChild(cell);
   });
+  var actionCell = document.createElement('td');
+  var removeButton = document.createElement('button');
+  var rowIndex = body.rows.length;
+  removeButton.type = 'button';
+  removeButton.className = 'daily-plan-row-delete';
+  removeButton.textContent = '−';
+  removeButton.title = 'Xóa dòng';
+  removeButton.setAttribute('aria-label', 'Xóa dòng ' + (rowIndex + 1));
+  removeButton.onclick = function() { removeDailyPlanRow(section, Array.prototype.indexOf.call(body.rows, this.closest('tr'))); };
+  actionCell.appendChild(removeButton);
+  row.appendChild(actionCell);
   body.appendChild(row);
+  body.querySelectorAll('.daily-plan-row-delete').forEach(function(button) { button.disabled = false; });
   markDailyPlanDirty();
   body.lastElementChild.querySelector('input').focus();
 }
 
+function removeDailyPlanRow(section, rowIndex) {
+  if (dailyPlanLocked || (section !== 'general' && section !== 'timeframe')) return;
+  var body = document.getElementById(section === 'general' ? 'generalPlanRows' : 'timeframePlanRows');
+  if (!body || body.rows.length <= 1 || rowIndex < 0 || rowIndex >= body.rows.length) return;
+  body.deleteRow(rowIndex);
+  Array.prototype.forEach.call(body.rows, function(row, index) {
+    row.querySelectorAll('input[data-plan-list]').forEach(function(input) { input.setAttribute('data-plan-index', String(index)); });
+    var button = row.querySelector('.daily-plan-row-delete');
+    if (button) {
+      button.setAttribute('aria-label', 'Xóa dòng ' + (index + 1));
+      button.disabled = dailyPlanLocked || body.rows.length <= 1;
+    }
+  });
+  markDailyPlanDirty();
+}
+
 function readDailyPlanForm() {
   var plan = emptyDailyPlan();
+  plan.generalBullish = []; plan.generalBearish = []; plan.timeframeBullish = []; plan.timeframeBearish = [];
   document.querySelectorAll('.daily-plan-input[data-plan-field]').forEach(function(el) { plan[el.getAttribute('data-plan-field')] = el.value; });
   document.querySelectorAll('.daily-plan-input[data-plan-list]').forEach(function(el) {
     var key = el.getAttribute('data-plan-list');
@@ -2757,6 +2788,7 @@ function setDailyPlanLocked(locked) {
   dailyPlanLocked = locked;
   document.querySelectorAll('.daily-plan-input').forEach(function(el) { el.disabled = locked; });
   document.querySelectorAll('.daily-plan-add-row').forEach(function(el) { el.disabled = locked; });
+  document.querySelectorAll('.daily-plan-row-delete').forEach(function(el) { el.disabled = locked || el.closest('tbody').rows.length <= 1; });
   document.getElementById('dailyPlanSaveBtn').disabled = locked;
   document.getElementById('dailyPlanEditBtn').disabled = !locked;
 }
@@ -2796,6 +2828,10 @@ function renderDailyPlan() {
   if (!data.dailyPlans) data.dailyPlans = {};
   var storedPlan = data.dailyPlans[activeDailyPlanDate];
   var plan = storedPlan || emptyDailyPlan();
+  var defaults = emptyDailyPlan();
+  ['generalBullish','generalBearish','timeframeBullish','timeframeBearish'].forEach(function(key) {
+    if (!Array.isArray(plan[key])) plan[key] = defaults[key];
+  });
   renderDailyPlanRows('general', plan.generalBullish, plan.generalBearish);
   renderDailyPlanRows('timeframe', plan.timeframeBullish, plan.timeframeBearish);
   document.querySelectorAll('.daily-plan-input[data-plan-field]').forEach(function(el) { el.value = plan[el.getAttribute('data-plan-field')] || ''; });
