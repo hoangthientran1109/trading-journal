@@ -21,13 +21,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16
 .header{text-align:center;padding:20px 0 8px;position:relative;isolation:isolate}
 .header h1{position:relative;z-index:1;font-size:27px;font-weight:700;color:var(--gold);letter-spacing:2px}
 .calm-horizon{position:relative;width:100%;height:86px;margin:8px 0 2px;overflow:hidden;pointer-events:none;opacity:.82;border-radius:var(--radius);mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.92) 70%,transparent 100%);background:linear-gradient(180deg,var(--horizon-sky),transparent);transition:background 2s ease,opacity 2s ease}
+.calm-horizon.horizon-opening{animation:horizon-opening 1.15s ease-out both}
+@keyframes horizon-opening{0%{opacity:.28;filter:brightness(.72)}55%{opacity:1;filter:brightness(1.12)}100%{opacity:.82;filter:brightness(1)}}
 .calm-horizon-sun{position:absolute;left:var(--horizon-sun-left,50%);top:var(--horizon-sun-top,24px);width:34px;height:34px;margin-left:-17px;border-radius:50%;background:var(--horizon-sun);box-shadow:0 0 35px 12px var(--horizon-glow);transition:left 55s linear,top 55s ease-in-out,background 2s ease,box-shadow 2s ease}
+.calm-horizon-clouds{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 2s ease}
+.calm-horizon-clouds i{position:absolute;height:11px;border-radius:50%;filter:blur(6px);background:rgba(196,207,207,.16);animation:calm-cloud-drift 112s ease-in-out infinite alternate}
+.calm-horizon-clouds i:first-child{width:145px;left:12%;top:25px}.calm-horizon-clouds i:last-child{width:108px;left:65%;top:37px;height:8px;animation-duration:148s;animation-delay:-49s;opacity:.7}
+html[data-day-phase="morning"] .calm-horizon-clouds,html[data-day-phase="day"] .calm-horizon-clouds{opacity:.7}
+@keyframes calm-cloud-drift{from{transform:translateX(-12px)}to{transform:translateX(28px)}}
 .calm-horizon-stars{position:absolute;inset:0;opacity:0;pointer-events:none;background-image:radial-gradient(circle at 8% 23%,rgba(224,233,242,.85) 0 1px,transparent 1.7px),radial-gradient(circle at 19% 52%,rgba(224,233,242,.65) 0 1px,transparent 1.7px),radial-gradient(circle at 32% 17%,rgba(224,233,242,.75) 0 1px,transparent 1.7px),radial-gradient(circle at 45% 37%,rgba(224,233,242,.7) 0 1px,transparent 1.7px),radial-gradient(circle at 61% 15%,rgba(224,233,242,.8) 0 1px,transparent 1.7px),radial-gradient(circle at 73% 44%,rgba(224,233,242,.65) 0 1px,transparent 1.7px),radial-gradient(circle at 89% 24%,rgba(224,233,242,.8) 0 1px,transparent 1.7px);transition:opacity 2s ease}
 html[data-day-phase="night"] .calm-horizon-stars{opacity:.68;animation:stars-soft-twinkle 8s ease-in-out infinite alternate}
 .calm-horizon-moon{position:absolute;left:82%;top:15px;width:22px;height:22px;border-radius:50%;opacity:0;background:#d0d9e6;box-shadow:0 0 23px 5px rgba(156,177,207,.19);transition:opacity 2s ease}
 .calm-horizon-moon::after{content:"";position:absolute;left:7px;top:-3px;width:22px;height:22px;border-radius:50%;background:#11151d}
 html[data-day-phase="night"] .calm-horizon-moon{opacity:.88}
 html[data-day-phase="night"] .calm-horizon-sun{opacity:0}
+.calm-horizon-moon-reflection{position:absolute;left:78%;bottom:4px;width:12%;height:33px;opacity:0;transform:skewX(-24deg);filter:blur(3px);background:linear-gradient(180deg,rgba(184,201,221,.1),rgba(184,201,221,.015) 75%,transparent);transition:opacity 2s ease}
+html[data-day-phase="night"] .calm-horizon-moon-reflection{opacity:.8}
 .calm-horizon-ridge{position:absolute;left:0;right:0;bottom:-1px;height:48px;clip-path:polygon(0 72%,12% 48%,24% 68%,38% 29%,52% 70%,67% 40%,82% 67%,92% 37%,100% 62%,100% 100%,0 100%);background:var(--horizon-far);transition:background 2s ease}
 .calm-horizon-mist{position:absolute;left:-12%;width:124%;height:22px;bottom:16px;border-radius:50%;filter:blur(9px);opacity:.5;pointer-events:none;background:radial-gradient(ellipse at 20% 55%,rgba(183,197,192,.17),transparent 48%),radial-gradient(ellipse at 73% 45%,rgba(190,201,198,.13),transparent 52%);animation:horizon-mist-drift 46s ease-in-out infinite alternate}
 .calm-horizon-mist.front{height:16px;bottom:5px;opacity:.34;filter:blur(7px);animation-duration:58s;animation-delay:-23s;background:radial-gradient(ellipse at 35% 55%,rgba(197,207,202,.14),transparent 50%),radial-gradient(ellipse at 82% 50%,rgba(190,201,198,.11),transparent 48%)}
@@ -55,13 +64,19 @@ html[data-day-phase="night"]{--horizon-sky:rgba(75,102,152,.16);--horizon-sun:#a
 .quote-editing .quote-input{display:inline-block}
 .quote-editing .quote-actions{display:flex}
 .header-line{width:40px;height:2px;background:var(--gold);margin:8px auto 16px;border-radius:1px}
+.header-line{position:relative;width:86px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.62),transparent)}
+.header-line::after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;transform:translate(-50%,-50%) rotate(45deg);border:1px solid rgba(201,168,76,.6);background:var(--bg)}
 .journal-footer{position:relative;width:100%;height:112px;margin:28px 0 8px;overflow:hidden;opacity:.68;mask-image:linear-gradient(to bottom,transparent 0%,#000 28%,rgba(0,0,0,.86) 82%,transparent 100%)}
 .journal-footer::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.16) 18%,rgba(201,168,76,.12) 82%,transparent)}
 .journal-footer::after{content:"";position:absolute;left:50%;bottom:7px;width:4px;height:4px;border-radius:50%;background:rgba(201,168,76,.3);box-shadow:0 0 12px rgba(201,168,76,.16)}
 .journal-footer svg{display:block;width:100%;height:100%}
 .journal-footer path{fill:none;stroke:rgba(169,178,165,.16);stroke-width:1;vector-effect:non-scaling-stroke}
 
-.section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.section{position:relative;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.section::before,.section::after{content:"";position:absolute;width:10px;height:10px;opacity:.2;pointer-events:none;transition:opacity .25s ease}
+.section::before{top:5px;right:5px;border-top:1px solid rgba(201,168,76,.65);border-right:1px solid rgba(201,168,76,.65)}
+.section::after{bottom:5px;left:5px;border-bottom:1px solid rgba(201,168,76,.55);border-left:1px solid rgba(201,168,76,.55)}
+.section:hover::before,.section:hover::after{opacity:.72}
 .section-title{font-size:16px;font-weight:700;color:var(--gold);text-transform:capitalize;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .section-title::before{content:'';display:inline-block;width:3px;height:16px;background:var(--gold);border-radius:2px}
 .section-title{width:100%}
@@ -248,7 +263,7 @@ canvas{width:100%;display:block;border-radius:var(--radius)}
 .breathing-finish{padding:8px 16px;border-radius:20px;border:1px solid rgba(144,176,167,.35);background:rgba(144,176,167,.08);color:#c4d6cf;font:inherit;font-size:12px;cursor:pointer;margin-top:20px}
 @keyframes calm-breathe{0%,100%{transform:scale(.82);opacity:.72}33.33%,50%{transform:scale(1.12);opacity:1}}
 @keyframes calm-breathe-ring{0%,100%{transform:translate(-50%,-50%) scale(.88);opacity:.35}33.33%,50%{transform:translate(-50%,-50%) scale(1.08);opacity:.8}}
-@media(prefers-reduced-motion:reduce){.breathing-orb,.breathing-orb::before,.calm-horizon-mist,.calm-horizon-stars,.calm-horizon-fireflies,body.focus-mode::after{animation:none}.calm-horizon-sun{transition:none}.investor-rail::before{transition:none}}
+@media(prefers-reduced-motion:reduce){.breathing-orb,.breathing-orb::before,.calm-horizon-mist,.calm-horizon-stars,.calm-horizon-fireflies,.calm-horizon-clouds i,body.focus-mode::after,#calmHorizon.horizon-opening{animation:none}.calm-horizon-sun{transition:none}.investor-rail::before,.investor-photo-frame::after{transition:none}.section::before,.section::after{transition:none}}
 .daily-plan-asset{max-width:260px;margin-bottom:8px}
 .daily-plan-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .daily-plan-table th{font-size:13px;color:var(--text-dim);text-align:left;padding:5px 6px;border:1px solid var(--border2);background:var(--card)}
@@ -461,12 +476,16 @@ table.pf-tbl .pf-coin-sym-sm{color:var(--text-dim);font-size:11px;margin-left:4p
 .investor-portrait-rail{left:calc((100vw - 1240px)/2 - 300px)}
 .investor-quote-rail{right:calc((100vw - 1240px)/2 - 300px);}
 .investor-quote-rail{background-image:repeating-linear-gradient(0deg,rgba(230,220,190,.012) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(230,220,190,.01) 0 1px,transparent 1px 4px),linear-gradient(160deg,rgba(25,23,19,.98),var(--card));background-color:var(--card);border-color:rgba(201,168,76,.2)}
+.investor-quote-rail{transform-origin:left center;perspective:900px}
+.investor-quote-rail.is-changing{transform:perspective(900px) translateY(calc(-50% + 6px)) rotateY(-4deg)}
 .investor-rail{overflow:hidden}
 .investor-rail::before{content:"";position:absolute;z-index:0;top:-30%;left:-90%;width:55%;height:160%;transform:rotate(20deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.045),transparent);transition:left .85s ease;pointer-events:none}
 .investor-rail:hover::before{left:140%}
 .investor-rail>*{position:relative;z-index:1}
 .investor-kicker{font-size:10px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:10px}
-.investor-photo-frame{height:390px;border-radius:7px;overflow:hidden;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative}
+.investor-photo-frame{height:390px;border-radius:7px;overflow:hidden;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:inset 0 0 0 3px rgba(201,168,76,.025)}
+.investor-photo-frame::after{content:"";position:absolute;inset:8px;border:1px solid rgba(201,168,76,.16);border-radius:3px;pointer-events:none;z-index:2;transition:inset .35s ease,border-color .35s ease}
+.investor-photo-frame:hover::after{inset:5px;border-color:rgba(201,168,76,.3)}
 .investor-photo{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);opacity:.9;transition:opacity .35s ease,transform .5s ease}
 .investor-photo:hover{opacity:1;transform:scale(1.025)}
 .investor-monogram{font-family:Georgia,serif;font-size:60px;letter-spacing:3px;color:var(--gold);opacity:.75}
@@ -618,7 +637,7 @@ body.focus-mode .focus-sound-toggle{display:inline-flex;align-items:center;gap:5
 </div>
 
 <div id="journalTab">
-<div class="calm-horizon" id="calmHorizon" aria-hidden="true"><div class="calm-horizon-stars"></div><div class="calm-horizon-moon"></div><div class="calm-horizon-sun"></div><div class="calm-horizon-ridge"></div><div class="calm-horizon-mist"></div><div class="calm-horizon-ridge front"></div><div class="calm-horizon-mist front"></div><div class="calm-horizon-fireflies"><i></i><i></i><i></i><i></i><i></i></div></div>
+<div class="calm-horizon" id="calmHorizon" aria-hidden="true"><div class="calm-horizon-stars"></div><div class="calm-horizon-clouds"><i></i><i></i></div><div class="calm-horizon-moon"></div><div class="calm-horizon-sun"></div><div class="calm-horizon-ridge"></div><div class="calm-horizon-mist"></div><div class="calm-horizon-ridge front"></div><div class="calm-horizon-mist front"></div><div class="calm-horizon-moon-reflection"></div><div class="calm-horizon-fireflies"><i></i><i></i><i></i><i></i><i></i></div></div>
 <div class="header">
   <h1>Trading Journal</h1>
   <div class="quote-wrap" id="quoteWrap">
@@ -1047,6 +1066,7 @@ function startPrivateJournal(user) {
     try { localStorage.setItem('tradingJournalOwnerUid', user.uid); } catch(e) {}
     fbListen();
     showAuthGate(false);
+    playHorizonOpeningOncePerDay();
   });
 }
 
@@ -3502,6 +3522,22 @@ function updateCalmHorizon() {
 }
 updateCalmHorizon();
 setInterval(updateCalmHorizon, 60000);
+
+function playHorizonOpeningOncePerDay() {
+  var horizon = document.getElementById('calmHorizon');
+  if (!horizon) return;
+  var today = localDateKey();
+  var shouldPlay = true;
+  try {
+    if (localStorage.getItem('horizonIntroDate') === today) shouldPlay = false;
+    else localStorage.setItem('horizonIntroDate', today);
+  } catch(e) {}
+  if (!shouldPlay) return;
+  horizon.classList.remove('horizon-opening');
+  void horizon.offsetWidth;
+  horizon.classList.add('horizon-opening');
+  setTimeout(function() { horizon.classList.remove('horizon-opening'); }, 1250);
+}
 
 var calmResetTimer = null;
 var calmResetEndsAt = 0;
